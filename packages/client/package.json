@@ -1,5 +1,5 @@
 {
-  "name": "athena",
+  "name": "@athena/client",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "sst": "3.0.83"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "8.10.145"
+    "@trpc/client": "^11.0.0-rc.490"
   }
 }
