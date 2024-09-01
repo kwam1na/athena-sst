@@ -17,7 +17,7 @@ export const main = Util.handler(async (event) => {
   }
 
   const params = {
-    TableName: Resource.Notes.name,
+    TableName: Resource.Products.name,
     Item: {
       // The attributes of the item to be created
       userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId, // The id of the author
