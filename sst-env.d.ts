@@ -3,15 +3,38 @@
 import "sst"
 declare module "sst" {
   export interface Resource {
-    "Client": {
-      "name": string
-      "type": "sst.aws.Function"
+    "Api": {
+      "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
-    "Trpc": {
-      "name": string
-      "type": "sst.aws.Function"
+    "Frontend": {
+      "type": "sst.aws.StaticSite"
       "url": string
+    }
+    "IdentityPool": {
+      "id": string
+      "type": "sst.aws.CognitoIdentityPool"
+    }
+    "Product_Images": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
+    "Products": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "StripeSecretKey": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "UserPool": {
+      "id": string
+      "type": "sst.aws.CognitoUserPool"
+    }
+    "UserPoolClient": {
+      "id": string
+      "secret": string
+      "type": "sst.aws.CognitoUserPoolClient"
     }
   }
 }

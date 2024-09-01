@@ -9,11 +9,16 @@ export default $config({
     };
   },
   async run() {
-    const { trpc, client } = await import("./infra/trpc");
+    await import("./infra/storage");
+    await import("./infra/api");
+    const auth = await import("./infra/auth");
+    await import("./infra/web");
 
     return {
-      api: trpc.url,
-      client: client.url,
+      UserPool: auth.userPool.id,
+      Region: aws.getRegionOutput().name,
+      IdentityPool: auth.identityPool.id,
+      UserPoolClient: auth.userPoolClient.id,
     };
   },
 });

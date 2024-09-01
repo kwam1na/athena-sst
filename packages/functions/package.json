@@ -1,0 +1,16 @@
+{
+  "name": "@athena/functions",
+  "version": "0.0.0",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.637.0",
+    "@aws-sdk/lib-dynamodb": "^3.637.0",
+    "@athena/core": "*",
+    "sst": "*",
+    "stripe": "^16.8.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.143",
+    "@types/uuid": "^10.0.0"
+  }
+}

@@ -1,18 +1,15 @@
 {
   "name": "athena",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "sst": "3.0.83"
-  },
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {},
   "devDependencies": {
-    "@types/aws-lambda": "8.10.145"
+    "@tsconfig/node20": "^20.1.4",
+    "typescript": "5.3.3"
+  },
+  "dependencies": {
+    "sst": "^3"
   }
 }
