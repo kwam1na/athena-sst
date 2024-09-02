@@ -7,6 +7,10 @@ declare module "sst" {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
+    "DB": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
     "Frontend": {
       "type": "sst.aws.StaticSite"
       "url": string
@@ -18,10 +22,6 @@ declare module "sst" {
     "Product_Images": {
       "name": string
       "type": "sst.aws.Bucket"
-    }
-    "Products": {
-      "name": string
-      "type": "sst.aws.Dynamo"
     }
     "StripeSecretKey": {
       "type": "sst.sst.Secret"

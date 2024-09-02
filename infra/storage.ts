@@ -2,11 +2,17 @@
 export const bucket = new sst.aws.Bucket("Product_Images");
 
 // Create the DynamoDB table
-export const table = new sst.aws.Dynamo("Products", {
+export const table = new sst.aws.Dynamo("DB", {
   fields: {
     productId: "string",
+    storeId: "string",
   },
   primaryIndex: { hashKey: "productId" },
+  globalIndexes: {
+    storeIdIndex: {
+      hashKey: "storeId",
+    },
+  },
 });
 
 // Create a secret for Stripe

@@ -1,26 +1,31 @@
-import { Resource } from "sst";
 import { Util } from "@athena/core/util";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { GetCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-
-const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { ProductEntity } from "./ProductEntity";
+import { GetItemCommand } from "dynamodb-toolbox";
 
 export const main = Util.handler(async (event) => {
-  const params = {
-    TableName: Resource.Products.name,
-    // 'Key' defines the partition key and sort key of
-    // the item to be retrieved
-    Key: {
-      userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId, // The id of the author
-      noteId: event?.pathParameters?.id, // The id of the note from the path
-    },
-  };
+  const productId = event?.pathParameters?.id;
 
-  const result = await dynamoDb.send(new GetCommand(params));
-  if (!result.Item) {
-    throw new Error("Item not found.");
+  if (!productId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Product ID is required" }),
+    };
   }
 
-  // Return the retrieved item
-  return JSON.stringify(result.Item);
+  const getCommand = ProductEntity.build(GetItemCommand);
+  const result = await getCommand.key({ productId: productId }).send();
+
+  if (!result.Item) {
+    return {
+      statusCode: 404,
+      body: JSON.stringify({ error: "Product not found." }),
+    };
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(result.Item),
+  };
 });

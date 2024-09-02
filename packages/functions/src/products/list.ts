@@ -6,22 +6,30 @@ import { QueryCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const main = Util.handler(async (event) => {
+  const storeId = event.queryStringParameters?.storeId;
+
+  if (!storeId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Store ID is required." }),
+    };
+  }
+
   const params = {
-    TableName: Resource.Products.name,
-    // 'KeyConditionExpression' defines the condition for the query
-    // - 'userId = :userId': only return items with matching 'userId'
-    //   partition key
-    KeyConditionExpression: "userId = :userId",
-    // 'ExpressionAttributeValues' defines the value in the condition
-    // - ':userId': defines 'userId' to be the id of the author
+    TableName: Resource.DB.name,
+    IndexName: "storeIdIndex",
+    KeyConditionExpression: "storeId = :storeId",
     ExpressionAttributeValues: {
-      ":userId":
-        event.requestContext.authorizer?.iam.cognitoIdentity.identityId,
+      ":storeId": storeId,
     },
   };
 
   const result = await dynamoDb.send(new QueryCommand(params));
 
-  // Return the matching list of items in response body
-  return JSON.stringify(result.Items);
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      products: result.Items,
+    }),
+  };
 });

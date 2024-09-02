@@ -1,20 +1,23 @@
-import { Resource } from "sst";
 import { Util } from "@athena/core/util";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DeleteCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-
-const dynamoDb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+import { ProductEntity } from "./ProductEntity";
+import { DeleteItemCommand } from "dynamodb-toolbox";
 
 export const main = Util.handler(async (event) => {
-  const params = {
-    TableName: Resource.Products.name,
-    Key: {
-      userId: event.requestContext.authorizer?.iam.cognitoIdentity.identityId, // The id of the author
-      noteId: event?.pathParameters?.id, // The id of the note from the path
-    },
+  const productId = event?.pathParameters?.id;
+
+  if (!productId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Product ID is required" }),
+    };
+  }
+
+  await ProductEntity.build(DeleteItemCommand)
+    .key({ productId: productId })
+    .send();
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ status: true }),
   };
-
-  await dynamoDb.send(new DeleteCommand(params));
-
-  return JSON.stringify({ status: true });
 });
