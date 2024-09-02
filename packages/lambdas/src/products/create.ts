@@ -1,8 +1,8 @@
 import * as uuid from "uuid";
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CreateProductPayload } from "./types";
-import { ProductEntity } from "./ProductEntity";
+import { CreateProductPayload } from "./types/payloads";
+import { ProductEntity } from "./entities/ProductEntity";
 import { PutItemCommand, PutItemInput } from "dynamodb-toolbox";
 
 const CreateProductPayloadSchema = z.object({
@@ -56,12 +56,7 @@ export const main = Util.handler(async (event) => {
     unitCost: data?.unitCost,
   };
 
-  await ProductEntity.build(PutItemCommand)
-    .item(item)
-    .options({
-      returnValues: "ALL_OLD",
-    })
-    .send();
+  await ProductEntity.build(PutItemCommand).item(item).send();
 
   return {
     statusCode: 200,

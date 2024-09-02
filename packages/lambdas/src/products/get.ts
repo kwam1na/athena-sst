@@ -1,7 +1,5 @@
 import { Util } from "@athena/core/util";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { ProductEntity } from "./ProductEntity";
+import { ProductEntity } from "./entities/ProductEntity";
 import { GetItemCommand } from "dynamodb-toolbox";
 
 export const main = Util.handler(async (event) => {
@@ -14,8 +12,9 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const getCommand = ProductEntity.build(GetItemCommand);
-  const result = await getCommand.key({ productId: productId }).send();
+  const result = await ProductEntity.build(GetItemCommand)
+    .key({ productId })
+    .send();
 
   if (!result.Item) {
     return {

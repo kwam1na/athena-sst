@@ -13,11 +13,8 @@ export const api = new sst.aws.ApiGatewayV2("Api", {
   },
 });
 
-api.route("POST /products", "packages/functions/src/products/create.main");
-api.route("PUT /products/{id}", "packages/functions/src/products/update.main");
-api.route("GET /products/{id}", "packages/functions/src/products/get.main");
-api.route("GET /products", "packages/functions/src/products/list.main");
-api.route(
-  "DELETE /products/{id}",
-  "packages/functions/src/products/delete.main"
-);
+api.route("POST /products", "packages/lambdas/src/products/create.main");
+api.route("PUT /products/{id}", "packages/lambdas/src/products/update.main");
+api.route("GET /products/{id}", "packages/lambdas/src/products/get.main");
+api.route("GET /products", "packages/lambdas/src/products/list.main");
+api.route("DELETE /products/{id}", "packages/lambdas/src/products/delete.main");

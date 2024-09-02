@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { UpdateProductPayload } from "./types";
-import { ProductEntity } from "./ProductEntity";
+import { UpdateProductPayload } from "./types/payloads";
+import { ProductEntity } from "./entities/ProductEntity";
 import { GetItemCommand, UpdateItemCommand } from "dynamodb-toolbox";
 
 const UpdateProductPayloadSchema = z.object({
@@ -43,10 +43,8 @@ export const main = Util.handler(async (event) => {
   }
 
   try {
-    // First, check if the product exists
-    const getCommand = ProductEntity.build(GetItemCommand);
-    const existingProduct = await getCommand
-      .key({ productId: productId })
+    const existingProduct = await ProductEntity.build(GetItemCommand)
+      .key({ productId })
       .send();
 
     if (!existingProduct.Item) {
@@ -55,8 +53,6 @@ export const main = Util.handler(async (event) => {
         body: JSON.stringify({ error: "Product not found" }),
       };
     }
-
-    const updateItemCommand = ProductEntity.build(UpdateItemCommand);
 
     const updateData = {
       productId: productId,
@@ -72,7 +68,7 @@ export const main = Util.handler(async (event) => {
       ...(data?.unitCost !== undefined && { unitCost: data.unitCost }),
     };
 
-    const result = await updateItemCommand
+    const result = await ProductEntity.build(UpdateItemCommand)
       .item(updateData)
       .options({
         returnValues: "ALL_NEW",

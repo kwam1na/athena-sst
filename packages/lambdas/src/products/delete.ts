@@ -1,5 +1,5 @@
 import { Util } from "@athena/core/util";
-import { ProductEntity } from "./ProductEntity";
+import { ProductEntity } from "./entities/ProductEntity";
 import { DeleteItemCommand } from "dynamodb-toolbox";
 
 export const main = Util.handler(async (event) => {
@@ -12,9 +12,7 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  await ProductEntity.build(DeleteItemCommand)
-    .key({ productId: productId })
-    .send();
+  await ProductEntity.build(DeleteItemCommand).key({ productId }).send();
 
   return {
     statusCode: 200,
