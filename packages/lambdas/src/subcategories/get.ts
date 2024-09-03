@@ -1,7 +1,5 @@
 import { Util } from "@athena/core/util";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
-import { GetItemCommand } from "dynamodb-toolbox";
-import { SubcategoryEntity } from "../db/entities/SubcategoryEntity";
+import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 export const main = Util.handler(async (event) => {
   const subcategoryId = event?.pathParameters?.id;
@@ -13,9 +11,7 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const result = await SubcategoryEntity.build(GetItemCommand)
-    .key({ id: subcategoryId })
-    .send();
+  const result = await SubcategoryRepository.get(subcategoryId);
 
   if (!result.Item) {
     return {

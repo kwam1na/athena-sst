@@ -5,7 +5,7 @@ import { Resource } from "sst";
 
 const dynamoDbClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-export const ProductTable = new Table({
+const InventoryTable = new Table({
   documentClient: dynamoDbClient,
   name: Resource.InventoryDB.name,
   partitionKey: { name: "pk", type: "string" },
@@ -16,3 +16,5 @@ export const ProductTable = new Table({
     },
   },
 });
+
+export default InventoryTable;

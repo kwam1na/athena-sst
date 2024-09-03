@@ -1,7 +1,5 @@
-import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { GetItemCommand, UpdateItemCommand } from "dynamodb-toolbox";
-import { SubcategoryEntity } from "../db/entities/SubcategoryEntity";
+import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
@@ -16,9 +14,7 @@ export const main = Util.handler(async (event) => {
   }
 
   try {
-    const existingProduct = await SubcategoryEntity.build(GetItemCommand)
-      .key({ id: subcategoryId })
-      .send();
+    const existingProduct = await SubcategoryRepository.get(subcategoryId);
 
     if (!existingProduct.Item) {
       return {
@@ -27,19 +23,7 @@ export const main = Util.handler(async (event) => {
       };
     }
 
-    const updateData = {
-      id: subcategoryId,
-      ...(data?.name && { subcategoryName: data.name }),
-      ...(data?.categoryId && { categoryId: data.categoryId }),
-      ...(data?.storeId && { storeId: data.storeId }),
-    };
-
-    const result = await SubcategoryEntity.build(UpdateItemCommand)
-      .item(updateData)
-      .options({
-        returnValues: "ALL_NEW",
-      })
-      .send();
+    const result = await SubcategoryRepository.update(subcategoryId, data);
 
     return {
       statusCode: 200,

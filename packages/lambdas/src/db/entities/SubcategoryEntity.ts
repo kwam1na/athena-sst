@@ -1,9 +1,9 @@
 import { Entity, schema, string } from "dynamodb-toolbox";
-import { ProductTable } from "../ProductTable";
+import InventoryTable from "../tables/inventoryTable";
 
-export const SubcategoryEntity = new Entity({
+const SubcategoryEntity = new Entity({
   name: "Subcategory",
-  table: ProductTable,
+  table: InventoryTable,
   schema: schema({
     id: string().required().savedAs("pk").key(),
     storeId: string().required(),
@@ -13,3 +13,5 @@ export const SubcategoryEntity = new Entity({
     createdByUserId: string().required(),
   }),
 });
+
+export default SubcategoryEntity;

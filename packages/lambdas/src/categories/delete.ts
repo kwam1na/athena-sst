@@ -1,6 +1,5 @@
 import { Util } from "@athena/core/util";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
-import { DeleteItemCommand } from "dynamodb-toolbox";
+import { CategoryRepository } from "../db/repos/categoryRepository";
 
 export const main = Util.handler(async (event) => {
   const id = event?.pathParameters?.id;
@@ -12,7 +11,7 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  await CategoryEntity.build(DeleteItemCommand).key({ id }).send();
+  await CategoryRepository.remove(id);
 
   return {
     statusCode: 200,

@@ -1,6 +1,5 @@
 import { Util } from "@athena/core/util";
-import { ProductEntity } from "../db/entities/ProductEntity";
-import { GetItemCommand } from "dynamodb-toolbox";
+import { ProductRepository } from "../db/repos/productRepository";
 
 export const main = Util.handler(async (event) => {
   const productId = event?.pathParameters?.id;
@@ -12,9 +11,7 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const result = await ProductEntity.build(GetItemCommand)
-    .key({ id: productId })
-    .send();
+  const result = await ProductRepository.get(productId);
 
   if (!result.Item) {
     return {

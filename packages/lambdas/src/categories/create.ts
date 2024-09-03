@@ -1,9 +1,7 @@
-import * as uuid from "uuid";
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
-import { PutItemCommand, PutItemInput } from "dynamodb-toolbox";
 import { CreateCategoryPayload } from "./types/payloads";
+import { CategoryRepository } from "../db/repos/categoryRepository";
 
 const CategorySchema = z.object({
   name: z.string(),
@@ -35,18 +33,10 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const id = uuid.v1();
-  const item: PutItemInput<typeof CategoryEntity> = {
-    id,
-    storeId: data?.storeId,
-    createdByUserId: "1",
-    categoryName: data?.name,
-  };
-
-  await CategoryEntity.build(PutItemCommand).item(item).send();
+  const category = await CategoryRepository.create(data);
 
   return {
     statusCode: 200,
-    body: JSON.stringify(item),
+    body: JSON.stringify(category),
   };
 });

@@ -1,6 +1,5 @@
 import { Util } from "@athena/core/util";
-import { DeleteItemCommand } from "dynamodb-toolbox";
-import { SubcategoryEntity } from "../db/entities/SubcategoryEntity";
+import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 export const main = Util.handler(async (event) => {
   const id = event?.pathParameters?.id;
@@ -12,7 +11,7 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  await SubcategoryEntity.build(DeleteItemCommand).key({ id }).send();
+  await SubcategoryRepository.remove(id);
 
   return {
     statusCode: 200,

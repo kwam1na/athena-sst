@@ -1,7 +1,5 @@
-import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
-import { GetItemCommand, UpdateItemCommand } from "dynamodb-toolbox";
+import { CategoryRepository } from "../db/repos/categoryRepository";
 
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
@@ -16,39 +14,26 @@ export const main = Util.handler(async (event) => {
   }
 
   try {
-    const existingProduct = await CategoryEntity.build(GetItemCommand)
-      .key({ id: categoryId })
-      .send();
+    const existingCategory = await CategoryRepository.get(categoryId);
 
-    if (!existingProduct.Item) {
+    if (!existingCategory.Item) {
       return {
         statusCode: 404,
         body: JSON.stringify({ error: "Category not found" }),
       };
     }
 
-    const updateData = {
-      pk: categoryId,
-      ...(data?.name && { categoryName: data.name }),
-      ...(data?.storeId && { storeId: data.storeId }),
-    };
-
-    const result = await CategoryEntity.build(UpdateItemCommand)
-      .item(updateData)
-      .options({
-        returnValues: "ALL_NEW",
-      })
-      .send();
+    const result = await CategoryRepository.update(categoryId, data);
 
     return {
       statusCode: 200,
       body: JSON.stringify(result.Attributes),
     };
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("Error updating category:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Could not update the product" }),
+      body: JSON.stringify({ error: "Could not update the category" }),
     };
   }
 });

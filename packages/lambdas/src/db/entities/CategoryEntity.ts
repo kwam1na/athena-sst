@@ -1,9 +1,9 @@
-import { Entity, prefix, schema, string } from "dynamodb-toolbox";
-import { ProductTable } from "../ProductTable";
+import { Entity, schema, string } from "dynamodb-toolbox";
+import InventoryTable from "../tables/inventoryTable";
 
-export const CategoryEntity = new Entity({
+const CategoryEntity = new Entity({
   name: "Category",
-  table: ProductTable,
+  table: InventoryTable,
   schema: schema({
     id: string().required().savedAs("pk").key(),
     storeId: string().required(),
@@ -12,3 +12,5 @@ export const CategoryEntity = new Entity({
     createdByUserId: string().required(),
   }),
 });
+
+export default CategoryEntity;

@@ -1,8 +1,5 @@
 import { Util } from "@athena/core/util";
-import { ProductTable } from "../db/ProductTable";
-import { Query, QueryCommand } from "dynamodb-toolbox";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
-import { ProductEntity } from "../db/entities/ProductEntity";
+import { ProductRepository } from "../db/repos/productRepository";
 
 export const main = Util.handler(async (event) => {
   const storeId = event.queryStringParameters?.storeId;
@@ -14,20 +11,12 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const query: Query<typeof ProductTable> = {
-    index: "byStoreId",
-    partition: storeId,
-  };
-
-  const { Items } = await ProductTable.build(QueryCommand)
-    .query(query)
-    .entities(ProductEntity)
-    .send();
+  const products = await ProductRepository.list(storeId);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      products: Items,
+      products,
     }),
   };
 });

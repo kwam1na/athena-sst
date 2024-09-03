@@ -1,37 +1,8 @@
-import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { UpdateProductPayload } from "./types/payloads";
-import { GetItemCommand, UpdateItemCommand } from "dynamodb-toolbox";
-import { ProductEntity } from "../db/entities/ProductEntity";
-
-const UpdateProductPayloadSchema = z.object({
-  categoryId: z.string().optional(),
-  currency: z.string().optional(),
-  inventoryCount: z.number().optional(),
-  name: z.string().optional(),
-  price: z.number().optional(),
-  sku: z.string().optional(),
-  subcategoryId: z.string().optional(),
-  unitCost: z.number().optional(),
-});
+import { ProductRepository } from "../db/repos/productRepository";
 
 export const main = Util.handler(async (event) => {
-  let data: UpdateProductPayload | undefined;
-
-  if (event.body != null) {
-    try {
-      data = UpdateProductPayloadSchema.parse(JSON.parse(event.body));
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({ error: e.errors }),
-        };
-      } else {
-        throw e;
-      }
-    }
-  }
+  const data = JSON.parse(event.body || "{}");
 
   const productId = event?.pathParameters?.id;
 
@@ -43,9 +14,7 @@ export const main = Util.handler(async (event) => {
   }
 
   try {
-    const existingProduct = await ProductEntity.build(GetItemCommand)
-      .key({ id: productId })
-      .send();
+    const existingProduct = await ProductRepository.get(productId);
 
     if (!existingProduct.Item) {
       return {
@@ -54,26 +23,7 @@ export const main = Util.handler(async (event) => {
       };
     }
 
-    const updateData = {
-      id: productId,
-      ...(data?.categoryId && { categoryId: data.categoryId }),
-      ...(data?.inventoryCount !== undefined && {
-        inventoryCount: data.inventoryCount,
-      }),
-      ...(data?.name && { productName: data.name }),
-      ...(data?.currency && { currency: data.currency }),
-      ...(data?.price !== undefined && { price: data.price }),
-      ...(data?.sku !== undefined && { sku: data.sku }),
-      ...(data?.subcategoryId && { subcategoryId: data.subcategoryId }),
-      ...(data?.unitCost !== undefined && { unitCost: data.unitCost }),
-    };
-
-    const result = await ProductEntity.build(UpdateItemCommand)
-      .item(updateData)
-      .options({
-        returnValues: "ALL_NEW",
-      })
-      .send();
+    const result = await ProductRepository.update(productId, data);
 
     return {
       statusCode: 200,

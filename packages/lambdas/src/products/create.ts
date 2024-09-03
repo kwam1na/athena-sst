@@ -1,9 +1,7 @@
-import * as uuid from "uuid";
 import { z } from "zod";
 import { Util } from "@athena/core/util";
 import { CreateProductPayload } from "./types/payloads";
-import { PutItemCommand, PutItemInput } from "dynamodb-toolbox";
-import { ProductEntity } from "../db/entities/ProductEntity";
+import { ProductRepository } from "../db/repos/productRepository";
 
 const CreateProductPayloadSchema = z.object({
   categoryId: z.string().optional(),
@@ -42,27 +40,10 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const id = uuid.v1();
-
-  const item: PutItemInput<typeof ProductEntity> = {
-    id,
-    // pk: id,
-    categoryId: data?.categoryId,
-    createdByUserId: "1",
-    currency: data?.currency,
-    inventoryCount: data?.inventoryCount,
-    productName: data?.name,
-    price: data?.price,
-    sku: data?.sku,
-    storeId: data?.storeId,
-    subcategoryId: data?.subcategoryId,
-    unitCost: data?.unitCost,
-  };
-
-  await ProductEntity.build(PutItemCommand).item(item).send();
+  const product = await ProductRepository.create(data);
 
   return {
     statusCode: 200,
-    body: JSON.stringify(item),
+    body: JSON.stringify(product),
   };
 });
