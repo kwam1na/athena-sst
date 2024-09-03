@@ -12,7 +12,7 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  await CategoryEntity.build(DeleteItemCommand).key({ pk: id }).send();
+  await CategoryEntity.build(DeleteItemCommand).key({ id }).send();
 
   return {
     statusCode: 200,

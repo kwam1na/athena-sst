@@ -32,3 +32,22 @@ api.route(
   "DELETE /categories/{id}",
   "packages/lambdas/src/categories/delete.main"
 );
+
+// Subcategories
+api.route(
+  "POST /subcategories",
+  "packages/lambdas/src/subcategories/create.main"
+);
+api.route(
+  "PUT /subcategories/{id}",
+  "packages/lambdas/src/subcategories/update.main"
+);
+api.route(
+  "GET /subcategories/{id}",
+  "packages/lambdas/src/subcategories/get.main"
+);
+api.route("GET /subcategories", "packages/lambdas/src/subcategories/list.main");
+api.route(
+  "DELETE /subcategories/{id}",
+  "packages/lambdas/src/subcategories/delete.main"
+);

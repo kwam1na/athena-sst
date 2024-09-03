@@ -44,7 +44,7 @@ export const main = Util.handler(async (event) => {
 
   try {
     const existingProduct = await ProductEntity.build(GetItemCommand)
-      .key({ pk: productId })
+      .key({ id: productId })
       .send();
 
     if (!existingProduct.Item) {
@@ -55,7 +55,7 @@ export const main = Util.handler(async (event) => {
     }
 
     const updateData = {
-      pk: productId,
+      id: productId,
       ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.inventoryCount !== undefined && {
         inventoryCount: data.inventoryCount,

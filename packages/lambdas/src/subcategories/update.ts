@@ -1,39 +1,40 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
 import { GetItemCommand, UpdateItemCommand } from "dynamodb-toolbox";
+import { SubcategoryEntity } from "../db/entities/SubcategoryEntity";
 
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
-  const categoryId = event?.pathParameters?.id;
+  const subcategoryId = event?.pathParameters?.id;
 
-  if (!categoryId) {
+  if (!subcategoryId) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Product ID is required" }),
+      body: JSON.stringify({ error: "Subcategory ID is required" }),
     };
   }
 
   try {
-    const existingProduct = await CategoryEntity.build(GetItemCommand)
-      .key({ id: categoryId })
+    const existingProduct = await SubcategoryEntity.build(GetItemCommand)
+      .key({ id: subcategoryId })
       .send();
 
     if (!existingProduct.Item) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ error: "Category not found" }),
+        body: JSON.stringify({ error: "Subcategory not found" }),
       };
     }
 
     const updateData = {
-      pk: categoryId,
-      ...(data?.name && { categoryName: data.name }),
+      id: subcategoryId,
+      ...(data?.name && { subcategoryName: data.name }),
+      ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.storeId && { storeId: data.storeId }),
     };
 
-    const result = await CategoryEntity.build(UpdateItemCommand)
+    const result = await SubcategoryEntity.build(UpdateItemCommand)
       .item(updateData)
       .options({
         returnValues: "ALL_NEW",
@@ -45,10 +46,10 @@ export const main = Util.handler(async (event) => {
       body: JSON.stringify(result.Attributes),
     };
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("Error updating subcategory:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Could not update the product" }),
+      body: JSON.stringify({ error: "Could not update the subcategory" }),
     };
   }
 });

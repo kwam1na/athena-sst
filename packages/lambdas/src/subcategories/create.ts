@@ -1,21 +1,22 @@
 import * as uuid from "uuid";
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CategoryEntity } from "../db/entities/CategoryEntity";
 import { PutItemCommand, PutItemInput } from "dynamodb-toolbox";
-import { CreateCategoryPayload } from "./types/payloads";
+import { CreateSubategoryPayload } from "./types/payloads";
+import { SubcategoryEntity } from "../db/entities/SubcategoryEntity";
 
-const CategorySchema = z.object({
+const SubcategorySchema = z.object({
   name: z.string(),
+  categoryId: z.string(),
   storeId: z.string(),
 });
 
 export const main = Util.handler(async (event) => {
-  let data: CreateCategoryPayload | undefined;
+  let data: CreateSubategoryPayload | undefined;
 
   if (event.body != null) {
     try {
-      data = CategorySchema.parse(JSON.parse(event.body));
+      data = SubcategorySchema.parse(JSON.parse(event.body));
     } catch (e) {
       if (e instanceof z.ZodError) {
         return {
@@ -36,14 +37,15 @@ export const main = Util.handler(async (event) => {
   }
 
   const id = uuid.v1();
-  const item: PutItemInput<typeof CategoryEntity> = {
+  const item: PutItemInput<typeof SubcategoryEntity> = {
     id,
+    categoryId: data?.categoryId,
     storeId: data?.storeId,
     createdByUserId: "1",
-    categoryName: data?.name,
+    subcategoryName: data?.name,
   };
 
-  await CategoryEntity.build(PutItemCommand).item(item).send();
+  await SubcategoryEntity.build(PutItemCommand).item(item).send();
 
   return {
     statusCode: 200,

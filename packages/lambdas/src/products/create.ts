@@ -46,7 +46,7 @@ export const main = Util.handler(async (event) => {
 
   const item: PutItemInput<typeof ProductEntity> = {
     id,
-    pk: id,
+    // pk: id,
     categoryId: data?.categoryId,
     createdByUserId: "1",
     currency: data?.currency,

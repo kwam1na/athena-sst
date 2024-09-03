@@ -7,7 +7,7 @@ const dynamoDbClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 export const ProductTable = new Table({
   documentClient: dynamoDbClient,
-  name: Resource.Inventory.name,
+  name: Resource.InventoryDB.name,
   partitionKey: { name: "pk", type: "string" },
   indexes: {
     byStoreId: {

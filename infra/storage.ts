@@ -2,7 +2,7 @@
 export const bucket = new sst.aws.Bucket("Product_Images");
 
 // Create the DynamoDB table
-export const table = new sst.aws.Dynamo("Inventory", {
+export const table = new sst.aws.Dynamo("InventoryDB", {
   fields: {
     pk: "string",
     storeId: "string",

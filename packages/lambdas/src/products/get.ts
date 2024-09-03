@@ -13,7 +13,7 @@ export const main = Util.handler(async (event) => {
   }
 
   const result = await ProductEntity.build(GetItemCommand)
-    .key({ pk: productId })
+    .key({ id: productId })
     .send();
 
   if (!result.Item) {
