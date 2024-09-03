@@ -2,8 +2,8 @@ import * as uuid from "uuid";
 import { z } from "zod";
 import { Util } from "@athena/core/util";
 import { CreateProductPayload } from "./types/payloads";
-import { ProductEntity } from "./entities/ProductEntity";
 import { PutItemCommand, PutItemInput } from "dynamodb-toolbox";
+import { ProductEntity } from "../db/entities/ProductEntity";
 
 const CreateProductPayloadSchema = z.object({
   categoryId: z.string().optional(),
@@ -42,8 +42,11 @@ export const main = Util.handler(async (event) => {
     };
   }
 
+  const id = uuid.v1();
+
   const item: PutItemInput<typeof ProductEntity> = {
-    productId: uuid.v1(),
+    id,
+    pk: id,
     categoryId: data?.categoryId,
     createdByUserId: "1",
     currency: data?.currency,

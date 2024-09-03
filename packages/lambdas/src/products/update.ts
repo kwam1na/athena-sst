@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
 import { UpdateProductPayload } from "./types/payloads";
-import { ProductEntity } from "./entities/ProductEntity";
 import { GetItemCommand, UpdateItemCommand } from "dynamodb-toolbox";
+import { ProductEntity } from "../db/entities/ProductEntity";
 
 const UpdateProductPayloadSchema = z.object({
   categoryId: z.string().optional(),
@@ -44,7 +44,7 @@ export const main = Util.handler(async (event) => {
 
   try {
     const existingProduct = await ProductEntity.build(GetItemCommand)
-      .key({ productId })
+      .key({ pk: productId })
       .send();
 
     if (!existingProduct.Item) {
@@ -55,7 +55,7 @@ export const main = Util.handler(async (event) => {
     }
 
     const updateData = {
-      productId: productId,
+      pk: productId,
       ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.inventoryCount !== undefined && {
         inventoryCount: data.inventoryCount,

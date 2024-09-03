@@ -7,10 +7,6 @@ declare module "sst" {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
-    "DB": {
-      "name": string
-      "type": "sst.aws.Dynamo"
-    }
     "Frontend": {
       "type": "sst.aws.StaticSite"
       "url": string
@@ -18,6 +14,10 @@ declare module "sst" {
     "IdentityPool": {
       "id": string
       "type": "sst.aws.CognitoIdentityPool"
+    }
+    "Inventory": {
+      "name": string
+      "type": "sst.aws.Dynamo"
     }
     "Product_Images": {
       "name": string

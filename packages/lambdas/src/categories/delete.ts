@@ -1,18 +1,18 @@
 import { Util } from "@athena/core/util";
-import { ProductEntity } from "../db/entities/ProductEntity";
+import { CategoryEntity } from "../db/entities/CategoryEntity";
 import { DeleteItemCommand } from "dynamodb-toolbox";
 
 export const main = Util.handler(async (event) => {
-  const productId = event?.pathParameters?.id;
+  const id = event?.pathParameters?.id;
 
-  if (!productId) {
+  if (!id) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Product ID is required" }),
+      body: JSON.stringify({ error: "Category ID is required" }),
     };
   }
 
-  await ProductEntity.build(DeleteItemCommand).key({ pk: productId }).send();
+  await CategoryEntity.build(DeleteItemCommand).key({ pk: id }).send();
 
   return {
     statusCode: 200,

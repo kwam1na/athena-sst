@@ -1,25 +1,25 @@
 import { Util } from "@athena/core/util";
-import { ProductEntity } from "../db/entities/ProductEntity";
+import { CategoryEntity } from "../db/entities/CategoryEntity";
 import { GetItemCommand } from "dynamodb-toolbox";
 
 export const main = Util.handler(async (event) => {
-  const productId = event?.pathParameters?.id;
+  const categoryId = event?.pathParameters?.id;
 
-  if (!productId) {
+  if (!categoryId) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Product ID is required" }),
+      body: JSON.stringify({ error: "Category ID is required" }),
     };
   }
 
-  const result = await ProductEntity.build(GetItemCommand)
-    .key({ pk: productId })
+  const result = await CategoryEntity.build(GetItemCommand)
+    .key({ pk: categoryId })
     .send();
 
   if (!result.Item) {
     return {
       statusCode: 404,
-      body: JSON.stringify({ error: "Product not found." }),
+      body: JSON.stringify({ error: "Category not found." }),
     };
   }
 

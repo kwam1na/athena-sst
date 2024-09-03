@@ -2,14 +2,14 @@
 export const bucket = new sst.aws.Bucket("Product_Images");
 
 // Create the DynamoDB table
-export const table = new sst.aws.Dynamo("DB", {
+export const table = new sst.aws.Dynamo("Inventory", {
   fields: {
-    productId: "string",
+    pk: "string",
     storeId: "string",
   },
-  primaryIndex: { hashKey: "productId" },
+  primaryIndex: { hashKey: "pk" },
   globalIndexes: {
-    storeIdIndex: {
+    byStoreId: {
       hashKey: "storeId",
     },
   },
