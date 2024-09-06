@@ -4,8 +4,8 @@ import { userPool, identityPool, userPoolClient } from "./auth";
 
 const region = aws.getRegionOutput().name;
 
-export const frontend = new sst.aws.StaticSite("Frontend", {
-  path: "packages/frontend",
+export const frontend = new sst.aws.StaticSite("WebApp", {
+  path: "packages/webapp",
   build: {
     output: "dist",
     command: "npm run build",
