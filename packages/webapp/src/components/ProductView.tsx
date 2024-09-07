@@ -6,23 +6,26 @@ import { ArrowLeftIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 import { productSchema } from "@/lib/schemas/product";
 import { ProductProvider, useProductContext } from "../contexts/ProductContext";
 import { ZodError } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Ban } from "lucide-react";
 import { createProduct } from "@/api/product";
 import { LoadingButton } from "./ui/loading-button";
 
 function ProductViewContent() {
-  const { productData, updateError } = useProductContext();
+  const { didProvideRequiredData, productData, updateError } =
+    useProductContext();
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
 
   const updateMutation = useMutation({
     mutationFn: () => saveProduct(),
     onSuccess: () => {
-      toast(`Product created`, {
+      toast(`Product '${productData.productName}' created`, {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       navigate({ to: "/products" });
     },
     onError: (e) => {
@@ -40,7 +43,6 @@ function ProductViewContent() {
         storeId: "1",
       });
 
-      console.log("sending data ->", data);
       return await createProduct(data);
     } catch (error) {
       updateError(error as ZodError);
@@ -51,6 +53,8 @@ function ProductViewContent() {
   const onSubmit = () => {
     updateMutation.mutate();
   };
+
+  const isValid = didProvideRequiredData();
 
   const Navigation = () => {
     return (
@@ -64,6 +68,7 @@ function ProductViewContent() {
 
         <div className="flex space-x-2">
           <LoadingButton
+            disabled={!isValid}
             isLoading={updateMutation.isPending}
             onClick={onSubmit}
           >

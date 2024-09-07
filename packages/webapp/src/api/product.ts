@@ -39,3 +39,11 @@ export async function updateProduct(
 
   return await response.json();
 }
+
+export async function deleteProduct(id: string) {
+  const response = await fetch(`${baseUrl}/${id}`, {
+    method: "DELETE",
+  });
+
+  return await response.json();
+}

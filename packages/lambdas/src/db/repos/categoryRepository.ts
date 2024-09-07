@@ -20,7 +20,7 @@ export module CategoryRepository {
       id,
       storeId: data?.storeId,
       createdByUserId: "1",
-      categoryName: data?.name,
+      categoryName: data?.categoryName,
     };
 
     await CategoryEntity.build(PutItemCommand).item(item).send();
@@ -38,7 +38,7 @@ export module CategoryRepository {
   ) {
     const updateData = {
       id,
-      ...(data?.name && { categoryName: data.name }),
+      ...(data?.categoryName && { categoryName: data.categoryName }),
       ...(data?.storeId && { storeId: data.storeId }),
     };
     return await CategoryEntity.build(UpdateItemCommand)

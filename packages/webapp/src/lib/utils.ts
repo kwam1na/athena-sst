@@ -10,3 +10,8 @@ export function cn(...inputs: ClassValue[]) {
 export const getErrorForField = (error: ZodError | null, fieldPath: string) => {
   return error?.issues?.find((issue) => issue.path.join(".") === fieldPath);
 };
+
+export function capitalizeFirstLetter(str: string): string {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

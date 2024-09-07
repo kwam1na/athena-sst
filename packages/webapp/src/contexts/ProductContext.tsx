@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from "react";
-import { ProductType } from "@/lib/schemas/product";
+import { productSchema, ProductType } from "@/lib/schemas/product";
 import { ZodError } from "zod";
 
 type ProductContextType = {
   error: ZodError | null;
+  didProvideRequiredData: () => boolean;
   updateError: (error: ZodError | null) => void;
   productData: Partial<ProductType>;
   updateProductData: (newData: Partial<ProductType>) => void;
@@ -27,9 +28,28 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     setError(error);
   };
 
+  const didProvideRequiredData = () => {
+    try {
+      productSchema.parse({
+        ...productData,
+        currency: "ghs",
+        storeId: "1",
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
   return (
     <ProductContext.Provider
-      value={{ productData, updateProductData, error, updateError }}
+      value={{
+        didProvideRequiredData,
+        productData,
+        updateProductData,
+        error,
+        updateError,
+      }}
     >
       {children}
     </ProductContext.Provider>

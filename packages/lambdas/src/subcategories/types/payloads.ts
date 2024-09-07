@@ -1,5 +1,5 @@
 export type CreateSubategoryPayload = {
-  name: string;
+  subcategoryName: string;
   categoryId: string;
   storeId: string;
 };

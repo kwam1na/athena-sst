@@ -39,3 +39,11 @@ export async function updateCategory(
 
   return await response.json();
 }
+
+export async function deleteCategory(id: string) {
+  const response = await fetch(`${baseUrl}/${id}`, {
+    method: "DELETE",
+  });
+
+  return await response.json();
+}

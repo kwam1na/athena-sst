@@ -6,7 +6,13 @@ import "./index.css";
 import React from "react";
 import { Toaster } from "./components/ui/sonner";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
 
 // Set up a Router instance
 const router = createRouter({

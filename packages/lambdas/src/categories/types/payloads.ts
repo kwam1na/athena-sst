@@ -1,4 +1,4 @@
 export type CreateCategoryPayload = {
-  name: string;
+  categoryName: string;
   storeId: string;
 };

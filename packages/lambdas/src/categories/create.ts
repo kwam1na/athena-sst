@@ -4,7 +4,7 @@ import { CreateCategoryPayload } from "./types/payloads";
 import { CategoryRepository } from "../db/repos/categoryRepository";
 
 const CategorySchema = z.object({
-  name: z.string(),
+  categoryName: z.string(),
   storeId: z.string(),
 });
 

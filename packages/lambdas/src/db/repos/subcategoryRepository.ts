@@ -20,7 +20,7 @@ export module SubcategoryRepository {
       id,
       storeId: data?.storeId,
       createdByUserId: "1",
-      subcategoryName: data?.name,
+      subcategoryName: data?.subcategoryName,
       categoryId: data.categoryId,
     };
 
@@ -39,7 +39,7 @@ export module SubcategoryRepository {
   ) {
     const updateData = {
       id,
-      ...(data?.name && { subcategoryName: data.name }),
+      ...(data?.subcategoryName && { subcategoryName: data.subcategoryName }),
       ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.storeId && { storeId: data.storeId }),
     };

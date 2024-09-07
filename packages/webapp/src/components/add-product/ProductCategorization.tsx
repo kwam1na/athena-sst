@@ -13,6 +13,17 @@ import { getErrorForField } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "@/api/category";
 import { getAllSubcategories } from "@/api/subcategory";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "../ui/button";
+import { useState } from "react";
+import CategorySubcategoryManager from "./CategorySubcategoryManager";
+import { Cog, CogIcon } from "lucide-react";
+// import { GearIcon } from "@radix-ui/react-icons";
 
 function ProductCategorization() {
   const categoryId = "categoryId";
@@ -85,7 +96,9 @@ function ProductCategorization() {
           </Label>
           <Select
             onValueChange={(value: string) => {
-              updateProductData({ subcategoryId: value });
+              if (value == "new") {
+                alert("new");
+              } else updateProductData({ subcategoryId: value });
             }}
           >
             <SelectTrigger id="subcategory" aria-label="Select subcategory">
@@ -112,16 +125,64 @@ function ProductCategorization() {
   );
 }
 
+function CategorizationManagerDialog({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
+  const handleClose = () => {
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{`Manage`}</DialogTitle>
+        </DialogHeader>
+        <CategorySubcategoryManager />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function ProductCategorizationView() {
+  const [dialogProps, setDialogProps] = useState({
+    open: false,
+  });
+
   return (
     <View
       className="h-auto"
       header={
-        <p className="text-sm text-sm text-muted-foreground">
-          Inventory (organization)
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-sm text-muted-foreground">
+            Inventory (organization)
+          </p>
+          <div className="space-x-2">
+            <Button
+              className="text-muted-foreground"
+              variant={"ghost"}
+              onClick={() => {
+                setDialogProps({
+                  open: true,
+                });
+              }}
+            >
+              <CogIcon className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       }
     >
+      <CategorizationManagerDialog
+        open={dialogProps.open}
+        onClose={() => {
+          setDialogProps((prev) => ({ ...prev, open: false }));
+        }}
+      />
       <ProductCategorization />
     </View>
   );

@@ -4,7 +4,7 @@ import { CreateSubategoryPayload } from "./types/payloads";
 import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 const SubcategorySchema = z.object({
-  name: z.string(),
+  subcategoryName: z.string(),
   categoryId: z.string(),
   storeId: z.string(),
 });
