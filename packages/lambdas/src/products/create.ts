@@ -4,10 +4,11 @@ import { CreateProductPayload } from "./types/payloads";
 import { ProductRepository } from "../db/repos/productRepository";
 
 const CreateProductPayloadSchema = z.object({
+  availability: z.string(),
   categoryId: z.string().optional(),
   currency: z.string(),
   inventoryCount: z.number(),
-  name: z.string(),
+  productName: z.string(),
   price: z.number(),
   sku: z.string().optional(),
   storeId: z.string(),

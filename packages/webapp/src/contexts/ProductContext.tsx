@@ -14,7 +14,9 @@ const ProductContext = createContext<ProductContextType | undefined>(undefined);
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [productData, setProductData] = useState<Partial<ProductType>>({});
+  const [productData, setProductData] = useState<Partial<ProductType>>({
+    availability: "draft",
+  });
   const [error, setError] = useState<ZodError | null>(null);
 
   const updateProductData = (newData: Partial<ProductType>) => {

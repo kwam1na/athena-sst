@@ -5,6 +5,7 @@ export const productSchema = z.object({
   inventoryCount: z.number().min(0),
   categoryId: z.string(),
   currency: z.string(),
+  storeId: z.string(),
   subcategoryId: z.string(),
   sku: z.string().min(3).optional(),
   productName: z.string().min(3),

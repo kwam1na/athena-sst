@@ -51,11 +51,12 @@ export module ProductRepository {
 
     const item: PutItemInput<typeof ProductEntity> = {
       id,
+      availability: data?.availability,
       categoryId: data?.categoryId,
       createdByUserId: "1",
       currency: data?.currency,
       inventoryCount: data?.inventoryCount,
-      productName: data?.name,
+      productName: data?.productName,
       price: data?.price,
       sku: productSKU,
       storeId: data?.storeId,
@@ -78,11 +79,12 @@ export module ProductRepository {
   ) {
     const updateData = {
       id,
+      ...(data?.availability && { availability: data.availability }),
       ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.inventoryCount !== undefined && {
         inventoryCount: data.inventoryCount,
       }),
-      ...(data?.name && { productName: data.name }),
+      ...(data?.productName && { productName: data.productName }),
       ...(data?.currency && { currency: data.currency }),
       ...(data?.price !== undefined && { price: data.price }),
       ...(data?.sku !== undefined && { sku: data.sku }),

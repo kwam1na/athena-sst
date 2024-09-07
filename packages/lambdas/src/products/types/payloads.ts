@@ -1,8 +1,9 @@
 export type CreateProductPayload = {
+  availability: string;
   categoryId?: string;
   currency: string;
   inventoryCount: number;
-  name: string;
+  productName: string;
   price: number;
   sku?: string;
   storeId: string;

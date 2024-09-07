@@ -5,6 +5,7 @@ const ProductEntity = new Entity({
   name: "Product",
   table: InventoryTable,
   schema: schema({
+    availability: string().required(),
     categoryId: string().optional(),
     currency: string().required(),
     createdByUserId: string().required(),
