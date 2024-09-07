@@ -16,6 +16,7 @@ import { CardFooter } from "../ui/card";
 import { useProductContext } from "../../contexts/ProductContext";
 import { getErrorForField } from "@/lib/utils";
 import { ProductType } from "@/lib/schemas/product";
+import { Skeleton } from "../ui/skeleton";
 
 type InventoryItem = {
   id: number;
@@ -44,7 +45,8 @@ function Stock() {
   const costId = "unitCost";
   const inventoryCountId = "inventoryCount";
 
-  const { error, updateProductData } = useProductContext();
+  const { error, isLoading, productData, updateProductData } =
+    useProductContext();
 
   const skuValidationError = getErrorForField(error, skuId);
   const priceValidationError = getErrorForField(error, priceId);
@@ -92,7 +94,7 @@ function Stock() {
   return (
     <>
       {rows.length > 0 && (
-        <Table className="">
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead>SKU</TableHead>
@@ -101,6 +103,7 @@ function Stock() {
               <TableHead>Price</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {rows.map((row, index) => (
               <TableRow key={row.id}>
@@ -108,12 +111,16 @@ function Stock() {
                   <Label htmlFor={`sku-${index}`} className="sr-only">
                     SKU
                   </Label>
-                  <Input
-                    id={`sku-${index}`}
-                    type="text"
-                    placeholder="SKU"
-                    onChange={(e) => handleChange(e, "sku")}
-                  />
+                  {isLoading && <Skeleton className="h-[40px] w-full" />}
+                  {!isLoading && (
+                    <Input
+                      id={`sku-${index}`}
+                      type="text"
+                      placeholder="SKU"
+                      onChange={(e) => handleChange(e, "sku")}
+                      value={productData.sku}
+                    />
+                  )}
                   {skuValidationError && (
                     <p className="text-red-500 text-sm font-medium">
                       {skuValidationError.message}
@@ -124,12 +131,16 @@ function Stock() {
                   <Label htmlFor={`stock-${index}`} className="sr-only">
                     Stock
                   </Label>
-                  <Input
-                    id={`stock-${index}`}
-                    type="number"
-                    placeholder="1"
-                    onChange={(e) => handleChange(e, "inventoryCount")}
-                  />
+                  {isLoading && <Skeleton className="h-[40px] w-full" />}
+                  {!isLoading && (
+                    <Input
+                      id={`stock-${index}`}
+                      type="number"
+                      placeholder="1"
+                      onChange={(e) => handleChange(e, "inventoryCount")}
+                      value={productData.inventoryCount}
+                    />
+                  )}
                   {inventoryCountValidationError && (
                     <p className="text-red-500 text-sm font-medium">
                       {inventoryCountValidationError.message}
@@ -140,12 +151,16 @@ function Stock() {
                   <Label htmlFor={`cost-${index}`} className="sr-only">
                     Cost
                   </Label>
-                  <Input
-                    id={`cost-${index}`}
-                    type="number"
-                    placeholder="9.99"
-                    onChange={(e) => handleChange(e, "unitCost")}
-                  />
+                  {isLoading && <Skeleton className="h-[40px] w-full" />}
+                  {!isLoading && (
+                    <Input
+                      id={`cost-${index}`}
+                      type="number"
+                      placeholder="9.99"
+                      onChange={(e) => handleChange(e, "unitCost")}
+                      value={productData.unitCost}
+                    />
+                  )}
                   {costValidationError && (
                     <p className="text-red-500 text-sm font-medium">
                       {costValidationError.message}
@@ -156,12 +171,16 @@ function Stock() {
                   <Label htmlFor={`price-${index}`} className="sr-only">
                     Price
                   </Label>
-                  <Input
-                    id={`price-${index}`}
-                    type="number"
-                    placeholder="9.99"
-                    onChange={(e) => handleChange(e, "price")}
-                  />
+                  {isLoading && <Skeleton className="h-[40px] w-full" />}
+                  {!isLoading && (
+                    <Input
+                      id={`price-${index}`}
+                      type="number"
+                      placeholder="9.99"
+                      onChange={(e) => handleChange(e, "price")}
+                      value={productData.price}
+                    />
+                  )}
                   {priceValidationError && (
                     <p className="text-red-500 text-sm font-medium">
                       {priceValidationError.message}

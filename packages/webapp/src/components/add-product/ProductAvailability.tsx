@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import View from "../View";
+import { Skeleton } from "../ui/skeleton";
 
 export function ProductAvailabilityView() {
   return (
@@ -26,7 +27,8 @@ export function ProductAvailabilityView() {
 function ProductAvailability() {
   const id = "availability";
 
-  const { error, updateProductData } = useProductContext();
+  const { error, isLoading, productData, updateProductData } =
+    useProductContext();
 
   const availabilityValidationError = getErrorForField(error, id);
 
@@ -36,21 +38,25 @@ function ProductAvailability() {
         <Label className="text-muted-foreground" htmlFor="status">
           Status
         </Label>
-        <Select
-          onValueChange={(value: string) => {
-            updateProductData({ availability: value });
-          }}
-          defaultValue="draft"
-        >
-          <SelectTrigger id="status" aria-label="Select status">
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="published">Active</SelectItem>
-            <SelectItem value="archived">Archived</SelectItem>
-          </SelectContent>
-        </Select>
+        {isLoading && <Skeleton className="h-[40px] w-full" />}
+        {!isLoading && (
+          <Select
+            onValueChange={(value: string) => {
+              updateProductData({ availability: value });
+            }}
+            defaultValue="draft"
+            value={productData.availability}
+          >
+            <SelectTrigger id="status" aria-label="Select status">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="published">Active</SelectItem>
+              <SelectItem value="archived">Archived</SelectItem>
+            </SelectContent>
+          </Select>
+        )}
         {availabilityValidationError && (
           <p className="text-red-500 text-sm font-medium">
             {availabilityValidationError.message}

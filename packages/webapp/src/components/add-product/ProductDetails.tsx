@@ -4,11 +4,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import View from "../View";
+import { Skeleton } from "../ui/skeleton";
 
 export function ProductDetailsView() {
   const id = "productName";
 
-  const { productData, updateProductData, error } = useProductContext();
+  const { productData, isLoading, updateProductData, error } =
+    useProductContext();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateProductData({ productName: e.target.value });
@@ -26,10 +28,13 @@ export function ProductDetailsView() {
           <Label className="text-muted-foreground" htmlFor="name">
             Name
           </Label>
-          <Input
-            value={productData.productName || ""}
-            onChange={handleNameChange}
-          />
+          {isLoading && <Skeleton className="h-[40px]" />}
+          {!isLoading && (
+            <Input
+              value={productData.productName || ""}
+              onChange={handleNameChange}
+            />
+          )}
           {validationError && (
             <p className="text-red-500 text-sm font-medium">
               {validationError.message}
@@ -40,7 +45,8 @@ export function ProductDetailsView() {
           <Label className="text-muted-foreground" htmlFor="description">
             Description
           </Label>
-          <Textarea />
+          {isLoading && <Skeleton className="h-[96px] w-full" />}
+          {!isLoading && <Textarea />}
         </div>
       </div>
     </View>

@@ -11,7 +11,7 @@ export default function ProductsView() {
   };
 
   return (
-    <View header={<Navigation />}>
+    <View className="bg-background" header={<Navigation />}>
       <Products />
     </View>
   );

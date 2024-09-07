@@ -7,32 +7,9 @@ import { Product } from "./data/schema";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { capitalizeFirstLetter } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
 
 export const columns: ColumnDef<Product>[] = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //       className="translate-y-[2px]"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //       className="translate-y-[2px]"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "sku",
     header: ({ column }) => (
@@ -48,9 +25,14 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("productName")}
-          </span>
+          <Link
+            to="/products/$productId"
+            params={(prev) => ({ ...prev, productId: row.original.id })}
+          >
+            <span className="max-w-[500px] truncate font-medium">
+              {row.getValue("productName")}
+            </span>
+          </Link>
           <Badge variant="outline">
             {capitalizeFirstLetter(row.original.availability)}
           </Badge>

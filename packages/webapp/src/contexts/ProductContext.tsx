@@ -1,9 +1,13 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { productSchema, ProductType } from "@/lib/schemas/product";
 import { ZodError } from "zod";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
+import { getProduct } from "@/api/product";
 
 type ProductContextType = {
   error: ZodError | null;
+  isLoading: boolean;
   didProvideRequiredData: () => boolean;
   updateError: (error: ZodError | null) => void;
   productData: Partial<ProductType>;
@@ -18,6 +22,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
   const [productData, setProductData] = useState<Partial<ProductType>>({
     availability: "draft",
   });
+
   const [error, setError] = useState<ZodError | null>(null);
 
   const updateProductData = (newData: Partial<ProductType>) => {
@@ -41,9 +46,24 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const { productId } = useParams({ strict: false });
+
+  const { data: product, isLoading } = useQuery({
+    queryKey: ["product", productId],
+    queryFn: () => getProduct(productId || ""),
+    enabled: !!productId,
+  });
+
+  useEffect(() => {
+    if (product) {
+      updateProductData(product);
+    }
+  }, [product]);
+
   return (
     <ProductContext.Provider
       value={{
+        isLoading,
         didProvideRequiredData,
         productData,
         updateProductData,

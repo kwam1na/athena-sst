@@ -272,10 +272,6 @@ function CategoryManager() {
 function SubcategoryManager() {
   const queryClient = useQueryClient();
 
-  //   const subcategoriesData = queryClient.getQueryData<SubcategoryResponse[]>([
-  //     "subcategories",
-  //   ]);
-
   const { data: subcategoriesData } = useQuery({
     queryKey: ["subcategories"],
     queryFn: getAllSubcategories,

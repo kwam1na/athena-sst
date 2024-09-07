@@ -22,14 +22,15 @@ import {
 import { Button } from "../ui/button";
 import { useState } from "react";
 import CategorySubcategoryManager from "./CategorySubcategoryManager";
-import { Cog, CogIcon } from "lucide-react";
-// import { GearIcon } from "@radix-ui/react-icons";
+import { CogIcon } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
 
 function ProductCategorization() {
   const categoryId = "categoryId";
   const subcategoryId = "subcategoryId";
 
-  const { error, updateProductData } = useProductContext();
+  const { error, isLoading, productData, updateProductData } =
+    useProductContext();
 
   const categoryError = getErrorForField(error, categoryId);
   const subcategoryError = getErrorForField(error, subcategoryId);
@@ -63,27 +64,31 @@ function ProductCategorization() {
           <Label className="text-muted-foreground" htmlFor="category">
             Category
           </Label>
-          <Select
-            onValueChange={(value: string) => {
-              updateProductData({ categoryId: value });
-            }}
-          >
-            <SelectTrigger id="category" aria-label="Select category">
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
+          {isLoading && <Skeleton className="h-[40px]" />}
+          {!isLoading && (
+            <Select
+              onValueChange={(value: string) => {
+                updateProductData({ categoryId: value });
+              }}
+              value={productData.categoryId}
+            >
+              <SelectTrigger id="category" aria-label="Select category">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
 
-            <SelectContent>
-              <SelectGroup>
-                {categories.map((category: any) => {
-                  return (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+              <SelectContent>
+                <SelectGroup>
+                  {categories.map((category: any) => {
+                    return (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
           {categoryError && (
             <p className="text-red-500 text-sm font-medium">
               {categoryError.message}
@@ -94,26 +99,30 @@ function ProductCategorization() {
           <Label className="text-muted-foreground" htmlFor="subcategory">
             Subcategory
           </Label>
-          <Select
-            onValueChange={(value: string) => {
-              if (value == "new") {
-                alert("new");
-              } else updateProductData({ subcategoryId: value });
-            }}
-          >
-            <SelectTrigger id="subcategory" aria-label="Select subcategory">
-              <SelectValue placeholder="Select subcategory" />
-            </SelectTrigger>
-            <SelectContent>
-              {subcategories.map((subcategory: any) => {
-                return (
-                  <SelectItem key={subcategory.id} value={subcategory.id}>
-                    {subcategory.name}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+          {isLoading && <Skeleton className="h-[40px]" />}
+          {!isLoading && (
+            <Select
+              onValueChange={(value: string) => {
+                if (value == "new") {
+                  alert("new");
+                } else updateProductData({ subcategoryId: value });
+              }}
+              value={productData.subcategoryId}
+            >
+              <SelectTrigger id="subcategory" aria-label="Select subcategory">
+                <SelectValue placeholder="Select subcategory" />
+              </SelectTrigger>
+              <SelectContent>
+                {subcategories.map((subcategory: any) => {
+                  return (
+                    <SelectItem key={subcategory.id} value={subcategory.id}>
+                      {subcategory.name}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          )}
           {subcategoryError && (
             <p className="text-red-500 text-sm font-medium">
               {subcategoryError.message}
@@ -165,6 +174,7 @@ export function ProductCategorizationView() {
             <Button
               className="text-muted-foreground"
               variant={"ghost"}
+              size={"icon"}
               onClick={() => {
                 setDialogProps({
                   open: true,

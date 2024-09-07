@@ -6,7 +6,7 @@ const Header = () => {
 
 const Sidebar = () => {
   return (
-    <section className="w-[300px] flex-none space-y-4 h-full border border-1 rounded-md">
+    <section className="bg-background w-[300px] flex-none space-y-4 h-full border border-1 rounded-md">
       <Header />
 
       <div className="flex flex-col space-y-4 px-4">
