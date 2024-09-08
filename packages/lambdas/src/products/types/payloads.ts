@@ -9,6 +9,7 @@ export type CreateProductPayload = {
   storeId: string;
   subcategoryId?: string;
   unitCost: number;
+  images: string[];
 };
 
 export type UpdateProductPayload = Partial<CreateProductPayload>;

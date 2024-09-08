@@ -22,9 +22,10 @@ import {
 import { LoadingButton } from "./ui/loading-button";
 import { AlertModal } from "./ui/alert-modal";
 import { useState } from "react";
+import { uploadProductImages } from "@/lib/imageUtils";
 
 function ProductViewContent() {
-  const { didProvideRequiredData, productData, updateError } =
+  const { didProvideRequiredData, images, productData, updateError } =
     useProductContext();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -94,11 +95,15 @@ function ProductViewContent() {
 
   const saveProduct = async () => {
     updateError(null);
+
+    const imageUrls = await uploadProductImages(product?.images || [], images);
+
     try {
       const data = productSchema.parse({
         ...productData,
         currency: "ghs",
         storeId: "1",
+        images: imageUrls,
       });
 
       return await createProduct(data);
@@ -112,11 +117,15 @@ function ProductViewContent() {
     if (!productId) return;
 
     updateError(null);
+
+    const imageUrls = await uploadProductImages(product?.images || [], images);
+
     try {
       const data = productSchema.parse({
         ...productData,
         currency: "ghs",
         storeId: "1",
+        images: imageUrls,
       });
 
       return await updateProduct(productId, data);

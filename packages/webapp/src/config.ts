@@ -4,9 +4,14 @@ const config = {
   STRIPE_KEY:
     "pk_test_51PrT6mRxIMGeFmUIi4qx5BXhf5azPOaYwDcvx9rE8zK9CuIl8KuxPpdBW5lYFtNPaWZ5XLFd14Fq7dFK3D8MXHmt00xLr0Bevj",
   // Backend config
+  aws: {
+    ACCESS: import.meta.env.VITE_AWS_ACCESS,
+    SECRET: import.meta.env.VITE_AWS_SECRET,
+  },
   s3: {
     REGION: import.meta.env.VITE_REGION,
     BUCKET: import.meta.env.VITE_BUCKET,
+    BUCKET_DOMAIN: import.meta.env.VITE_BUCKET_DOMAIN,
   },
   apiGateway: {
     REGION: import.meta.env.VITE_REGION,

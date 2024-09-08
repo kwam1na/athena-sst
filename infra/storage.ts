@@ -17,3 +17,7 @@ export const table = new sst.aws.Dynamo("InventoryDB", {
 
 // Create a secret for Stripe
 export const secret = new sst.Secret("StripeSecretKey");
+
+export const awsAcessKey = new sst.Secret("AWSAccessKey");
+
+export const awsSecretKey = new sst.Secret("AWSSecretKey");

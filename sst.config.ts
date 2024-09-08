@@ -9,7 +9,7 @@ export default $config({
     };
   },
   async run() {
-    await import("./infra/storage");
+    const s = await import("./infra/storage");
     await import("./infra/api");
     const auth = await import("./infra/auth");
     await import("./infra/web");
@@ -19,6 +19,7 @@ export default $config({
       Region: aws.getRegionOutput().name,
       IdentityPool: auth.identityPool.id,
       UserPoolClient: auth.userPoolClient.id,
+      Bucket: s.bucket.domain,
     };
   },
 });

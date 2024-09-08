@@ -1,4 +1,4 @@
-import { Entity, number, schema, string } from "dynamodb-toolbox";
+import { Entity, list, number, schema, string } from "dynamodb-toolbox";
 import InventoryTable from "../tables/inventoryTable";
 
 const ProductEntity = new Entity({
@@ -12,6 +12,7 @@ const ProductEntity = new Entity({
     inventoryCount: number().required(),
     id: string().required().savedAs("pk").key(),
     productName: string().required(),
+    images: list(string()),
     price: number().required(),
     sku: string().optional(),
     storeId: string().required(),

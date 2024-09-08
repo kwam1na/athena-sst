@@ -3,6 +3,14 @@
 import "sst"
 declare module "sst" {
   export interface Resource {
+    "AWSAccessKey": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "AWSSecretKey": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "Api": {
       "type": "sst.aws.ApiGatewayV2"
       "url": string

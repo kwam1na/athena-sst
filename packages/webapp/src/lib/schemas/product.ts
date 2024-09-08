@@ -11,6 +11,7 @@ export const productSchema = z.object({
   productName: z.string().min(3),
   price: z.number().min(0),
   unitCost: z.number().min(0),
+  images: z.array(z.string()),
 });
 
 export type ProductType = z.infer<typeof productSchema>;

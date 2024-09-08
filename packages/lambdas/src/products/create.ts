@@ -14,6 +14,7 @@ const CreateProductPayloadSchema = z.object({
   storeId: z.string(),
   subcategoryId: z.string().optional(),
   unitCost: z.number(),
+  images: z.array(z.string()),
 });
 
 export const main = Util.handler(async (event) => {

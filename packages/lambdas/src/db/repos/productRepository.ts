@@ -1,4 +1,5 @@
 import {
+  $set,
   DeleteItemCommand,
   GetItemCommand,
   PutItemCommand,
@@ -62,6 +63,7 @@ export module ProductRepository {
       storeId: data?.storeId,
       subcategoryId: data?.subcategoryId,
       unitCost: data?.unitCost,
+      images: data?.images,
     };
 
     await ProductEntity.build(PutItemCommand).item(item).send();
@@ -90,6 +92,7 @@ export module ProductRepository {
       ...(data?.sku !== undefined && { sku: data.sku }),
       ...(data?.subcategoryId && { subcategoryId: data.subcategoryId }),
       ...(data?.unitCost !== undefined && { unitCost: data.unitCost }),
+      ...(data?.images !== undefined && { images: $set(data.images) }),
     };
 
     return await ProductEntity.build(UpdateItemCommand)
