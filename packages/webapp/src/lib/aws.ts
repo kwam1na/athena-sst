@@ -3,7 +3,6 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-  DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
 import { FileWithPath } from "react-dropzone";
 
@@ -28,10 +27,14 @@ export const uploadFileToS3 = async (
     };
 
     await s3.send(new PutObjectCommand(params));
-
-    return `https://${config.s3.BUCKET_DOMAIN}/${key}`;
+    return {
+      success: true,
+      url: `https://${config.s3.BUCKET_DOMAIN}/${key}`,
+      key,
+    };
   } catch (error) {
     console.error("Error uploading file", error);
+    return { success: false, error, key, url: file.path };
   }
 };
 
@@ -45,7 +48,9 @@ export const deleteFileInS3 = async (bucketName: string, path: string) => {
     };
 
     await s3.send(new DeleteObjectCommand(params));
+    return { success: true, key };
   } catch (error) {
     console.error("Error deleting file", error);
+    return { success: false, error, key, url: path };
   }
 };

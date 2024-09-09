@@ -35,12 +35,20 @@ function ProductCategorization() {
   const categoryError = getErrorForField(error, categoryId);
   const subcategoryError = getErrorForField(error, subcategoryId);
 
-  const { data: categoriesData } = useQuery({
+  const {
+    data: categoriesData,
+    isLoading: isLoadingCategories,
+    error: fetchCategoriesError,
+  } = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
   });
 
-  const { data: subcategoriesData } = useQuery({
+  const {
+    data: subcategoriesData,
+    isLoading: isLoadingSubcategories,
+    error: fetchSubategoriesError,
+  } = useQuery({
     queryKey: ["subcategories"],
     queryFn: getAllSubcategories,
   });
@@ -57,6 +65,9 @@ function ProductCategorization() {
       id: subcategory.id,
     })) || [];
 
+  const showCategoriesSkeleton = isLoading || isLoadingCategories;
+  const showSubcategoriesSkeleton = isLoading || isLoadingSubcategories;
+
   return (
     <>
       <div className="flex gap-8 px-4 py-8">
@@ -64,8 +75,8 @@ function ProductCategorization() {
           <Label className="text-muted-foreground" htmlFor="category">
             Category
           </Label>
-          {isLoading && <Skeleton className="h-[40px]" />}
-          {!isLoading && (
+          {showCategoriesSkeleton && <Skeleton className="h-[40px]" />}
+          {!showCategoriesSkeleton && (
             <Select
               onValueChange={(value: string) => {
                 updateProductData({ categoryId: value });
@@ -89,9 +100,9 @@ function ProductCategorization() {
               </SelectContent>
             </Select>
           )}
-          {categoryError && (
+          {(categoryError || fetchCategoriesError) && (
             <p className="text-red-500 text-sm font-medium">
-              {categoryError.message}
+              {categoryError?.message || fetchCategoriesError?.message}
             </p>
           )}
         </div>
@@ -99,8 +110,8 @@ function ProductCategorization() {
           <Label className="text-muted-foreground" htmlFor="subcategory">
             Subcategory
           </Label>
-          {isLoading && <Skeleton className="h-[40px]" />}
-          {!isLoading && (
+          {showSubcategoriesSkeleton && <Skeleton className="h-[40px]" />}
+          {!showSubcategoriesSkeleton && (
             <Select
               onValueChange={(value: string) => {
                 if (value == "new") {
@@ -123,9 +134,9 @@ function ProductCategorization() {
               </SelectContent>
             </Select>
           )}
-          {subcategoryError && (
+          {(subcategoryError || fetchSubategoriesError) && (
             <p className="text-red-500 text-sm font-medium">
-              {subcategoryError.message}
+              {subcategoryError?.message || fetchSubategoriesError?.message}
             </p>
           )}
         </div>

@@ -6,6 +6,10 @@ const baseUrl = `${config.apiGateway.URL}/categories`;
 export async function getAllCategories(): Promise<CategoryResponse[]> {
   const response = await fetch(`${baseUrl}?storeId=1`);
 
+  if (!response.ok) {
+    throw new Error("Error fetching categories.");
+  }
+
   const data = await response.json();
 
   return data.categories;
@@ -13,6 +17,10 @@ export async function getAllCategories(): Promise<CategoryResponse[]> {
 
 export async function getCategory(id: string): Promise<CategoryResponse> {
   const response = await fetch(`${baseUrl}/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Error fetching category.");
+  }
 
   return await response.json();
 }
@@ -24,6 +32,10 @@ export async function createCategory(
     method: "POST",
     body: JSON.stringify(data),
   });
+
+  if (!response.ok) {
+    throw new Error("Error creating category.");
+  }
 
   return await response.json();
 }
@@ -37,6 +49,10 @@ export async function updateCategory(
     body: JSON.stringify(data),
   });
 
+  if (!response.ok) {
+    throw new Error("Error updating category.");
+  }
+
   return await response.json();
 }
 
@@ -44,6 +60,10 @@ export async function deleteCategory(id: string) {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
   });
+
+  if (!response.ok) {
+    throw new Error("Error deleting category.");
+  }
 
   return await response.json();
 }

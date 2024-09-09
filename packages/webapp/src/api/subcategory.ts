@@ -9,6 +9,10 @@ const baseUrl = `${config.apiGateway.URL}/subcategories`;
 export async function getAllSubcategories(): Promise<SubcategoryResponse[]> {
   const response = await fetch(`${baseUrl}?storeId=1`);
 
+  if (!response.ok) {
+    throw new Error("Error fetching subcategories.");
+  }
+
   const data = await response.json();
 
   return data.subcategories;
@@ -16,6 +20,10 @@ export async function getAllSubcategories(): Promise<SubcategoryResponse[]> {
 
 export async function getSubategory(id: string): Promise<SubcategoryResponse> {
   const response = await fetch(`${baseUrl}/${id}`);
+
+  if (!response.ok) {
+    throw new Error("Error fetching subcategory.");
+  }
 
   return await response.json();
 }
@@ -27,6 +35,10 @@ export async function createSubcategory(
     method: "POST",
     body: JSON.stringify(data),
   });
+
+  if (!response.ok) {
+    throw new Error("Error creating subcategory.");
+  }
 
   return await response.json();
 }
@@ -40,6 +52,10 @@ export async function updateSubcategory(
     body: JSON.stringify(data),
   });
 
+  if (!response.ok) {
+    throw new Error("Error updating subcategory.");
+  }
+
   return await response.json();
 }
 
@@ -47,6 +63,10 @@ export async function deleteSubategory(id: string) {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
   });
+
+  if (!response.ok) {
+    throw new Error("Error deleting subcategory.");
+  }
 
   return await response.json();
 }

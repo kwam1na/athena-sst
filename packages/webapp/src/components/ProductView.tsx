@@ -22,13 +22,18 @@ import {
 import { LoadingButton } from "./ui/loading-button";
 import { AlertModal } from "./ui/alert-modal";
 import { useState } from "react";
-import { uploadProductImages } from "@/lib/imageUtils";
+import { deleteFiles, uploadProductImages } from "@/lib/imageUtils";
+import { ActionModal } from "./ui/action-modal";
+import { ErrorPage } from "./states/error";
 
 function ProductViewContent() {
   const { didProvideRequiredData, images, productData, updateError } =
     useProductContext();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isActionModalOpen, setIsActionModalOpen] = useState(false);
+  const [failedToUploadUrls, setFailedToUploadUrls] = useState<string[]>([]);
+  const [isDeletingImages, setIsDeletingImages] = useState(false);
 
   const { productId } = useParams({ strict: false });
 
@@ -36,7 +41,11 @@ function ProductViewContent() {
 
   const navigate = useNavigate();
 
-  const { data: product } = useQuery({
+  const {
+    data: product,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ["product", productId],
     queryFn: () => getProduct(productId || ""),
     enabled: !!productId,
@@ -53,7 +62,10 @@ function ProductViewContent() {
     },
     onError: (e) => {
       if (e instanceof ZodError) return;
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+      toast("Something went wrong", {
+        description: e.message,
+        icon: <Ban className="w-4 h-4" />,
+      });
     },
   });
 
@@ -69,7 +81,10 @@ function ProductViewContent() {
     },
     onError: (e) => {
       if (e instanceof ZodError) return;
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+      toast("Something went wrong", {
+        description: e.message,
+        icon: <Ban className="w-4 h-4" />,
+      });
     },
   });
 
@@ -88,15 +103,18 @@ function ProductViewContent() {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       navigate({ to: "/products" });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        description: e.message,
+        icon: <Ban className="w-4 h-4" />,
+      });
     },
   });
 
   const saveProduct = async () => {
     updateError(null);
 
-    const imageUrls = await uploadProductImages(product?.images || [], images);
+    const { imageUrls } = await uploadProductImages(images);
 
     try {
       const data = productSchema.parse({
@@ -118,7 +136,13 @@ function ProductViewContent() {
 
     updateError(null);
 
-    const imageUrls = await uploadProductImages(product?.images || [], images);
+    const { imageUrls, failedDeleteUrls } = await uploadProductImages(images);
+
+    if (failedDeleteUrls.length > 0) {
+      setFailedToUploadUrls(failedDeleteUrls);
+      setIsActionModalOpen(true);
+      throw new Error("ahhhh");
+    }
 
     try {
       const data = productSchema.parse({
@@ -140,6 +164,18 @@ function ProductViewContent() {
     else createMutation.mutate();
   };
 
+  const retryDeletingImages = async () => {
+    setIsDeletingImages(true);
+    const res = await deleteFiles(failedToUploadUrls);
+    setIsDeletingImages(false);
+
+    if (res.failedDeleteKeys.length > 0) {
+      setFailedToUploadUrls(res.failedDeleteUrls);
+      setIsActionModalOpen(true);
+      return;
+    }
+  };
+
   const isValid = didProvideRequiredData();
 
   const Navigation = () => {
@@ -155,7 +191,7 @@ function ProductViewContent() {
         </Link>
 
         <div className="flex space-x-2">
-          {productId && (
+          {productId && !error && !isLoading && (
             <LoadingButton
               isLoading={deleteMutation.isPending}
               variant={"outline"}
@@ -190,7 +226,29 @@ function ProductViewContent() {
           deleteMutation.mutate();
         }}
       />
-      <Product />
+      <ActionModal
+        isOpen={isActionModalOpen}
+        loading={isDeletingImages}
+        title="Error deleting product images"
+        description=""
+        declineText="Cancel"
+        confirmText="Try again"
+        onConfirm={retryDeletingImages}
+        onClose={() => setIsActionModalOpen(false)}
+      >
+        <div className="grid grid-cols-4 space-y-2">
+          {failedToUploadUrls.map((key, index) => (
+            <img
+              key={index}
+              alt="Uploaded image"
+              className={`aspect-square w-full w-[64px] h-[64px] rounded-md object-cover`}
+              src={key}
+            />
+          ))}
+        </div>
+      </ActionModal>
+      {!error && <Product />}
+      {error && <ErrorPage title={error.message} />}
     </View>
   );
 }
