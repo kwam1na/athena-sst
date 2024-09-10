@@ -16,4 +16,9 @@ export const productSchema = z.object({
 
 export type ProductType = z.infer<typeof productSchema>;
 
-export type ProductResponse = ProductType & { id: string };
+export type ProductResponseBody = ProductType & { id: string };
+
+export type ProductResponse = {
+  product: ProductResponseBody;
+  warning: string;
+};

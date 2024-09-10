@@ -120,4 +120,26 @@ export module ProductRepository {
 
     return Items;
   }
+
+  export async function find(storeId: string, filters: Record<string, any>) {
+    const query: Query<typeof InventoryTable> = {
+      index: "byStoreId",
+      partition: storeId,
+    };
+
+    const { Items } = await InventoryTable.build(QueryCommand)
+      .query(query)
+      .entities(ProductEntity)
+      .options({
+        filters: {
+          Product: {
+            attr: "sku",
+            eq: filters?.sku?.toUpperCase(),
+          },
+        },
+      })
+      .send();
+
+    return Items?.[0];
+  }
 }

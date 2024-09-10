@@ -33,11 +33,13 @@ export async function createProduct(
     body: JSON.stringify(data),
   });
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error creating product.");
+    throw new Error(res.error || "Error creating product.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function updateProduct(
@@ -49,11 +51,13 @@ export async function updateProduct(
     body: JSON.stringify(data),
   });
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error updating product.");
+    throw new Error(res.error || "Error updating product.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function deleteProduct(id: string) {
@@ -61,9 +65,11 @@ export async function deleteProduct(id: string) {
     method: "DELETE",
   });
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error deleting product.");
+    throw new Error(res.error || "Error deleting product.");
   }
 
-  return await response.json();
+  return res;
 }

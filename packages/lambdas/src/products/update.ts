@@ -23,11 +23,26 @@ export const main = Util.handler(async (event) => {
       };
     }
 
+    let warning;
+
+    // if updating sku, check that a record doesn't already exist
+    if (data.sku && data.storeId) {
+      const existingProductWithSku = await ProductRepository.find(
+        data.storeId,
+        { sku: data.sku }
+      );
+
+      if (existingProductWithSku && productId != existingProductWithSku?.id) {
+        delete data.sku;
+        warning = "SKU already assigned to a different product.";
+      }
+    }
+
     const result = await ProductRepository.update(productId, data);
 
     return {
       statusCode: 200,
-      body: JSON.stringify(result.Attributes),
+      body: JSON.stringify({ product: result.Attributes, warning }),
     };
   } catch (error) {
     console.error("Error updating product:", error);

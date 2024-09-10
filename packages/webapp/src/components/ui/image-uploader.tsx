@@ -87,7 +87,7 @@ export default function ImageUploader({
               />
               {image.markedForDeletion && (
                 <div className="font-medium text-xs absolute top-0 left-0 m-2 text-white bg-black bg-opacity-50 px-2 py-1 rounded-lg">
-                  Deletion pending
+                  Marked for deletion
                 </div>
               )}
             </AppContextMenu>

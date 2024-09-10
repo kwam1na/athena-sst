@@ -71,13 +71,15 @@ function ProductViewContent() {
 
   const updateMutation = useMutation({
     mutationFn: () => modifyProduct(),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast(`Product '${productData.productName}' updated`, {
+        description: <p className="text-destructive">{data?.warning}</p>,
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["product", productId] });
-      navigate({ to: "/products" });
+
+      if (!data?.warning) navigate({ to: "/products" });
     },
     onError: (e) => {
       if (e instanceof ZodError) return;
