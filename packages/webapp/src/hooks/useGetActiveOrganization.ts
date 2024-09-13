@@ -3,19 +3,24 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
 export default function useGetActiveOrganization() {
-  const { data: organizations, isLoading: isLoadingOrganizations } = useQuery({
+  const {
+    data: organizations,
+    isLoading: isLoadingOrganizations,
+    error: fetchOrganizationError,
+  } = useQuery({
     queryKey: ["organizations"],
     queryFn: () => getAllOrganizations(),
   });
 
-  const { orgName } = useParams({ strict: false });
+  const { orgUrlSlug } = useParams({ strict: false });
 
   const activeOrganization = organizations?.find(
-    (org) => org.organizationUrlSlug == orgName
+    (org) => org.organizationUrlSlug == orgUrlSlug
   );
 
   return {
     activeOrganization,
+    fetchOrganizationError,
     isLoadingOrganizations,
   };
 }

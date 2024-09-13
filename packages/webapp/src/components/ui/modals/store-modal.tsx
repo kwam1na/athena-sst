@@ -60,16 +60,18 @@ export const StoreModal = () => {
       toast(`${store.storeName} created`, {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
-      queryClient.invalidateQueries({ queryKey: ["stores"] });
+      queryClient.invalidateQueries({
+        queryKey: ["stores", activeOrganization?.id],
+      });
       storeModal.onClose();
       form.reset();
 
       navigate({
-        to: "/organization/$orgName/store/$storeName/products",
+        to: "/organization/$orgUrlSlug/store/$storeUrlSlug/products",
         params: (prev) => ({
           ...prev,
-          orgName: prev.orgName!,
-          storeName: store.storeUrlSlug,
+          orgUrlSlug: prev.orgUrlSlug!,
+          storeUrlSlug: store.storeUrlSlug,
         }),
       });
     },

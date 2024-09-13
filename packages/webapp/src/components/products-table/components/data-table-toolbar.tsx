@@ -46,7 +46,7 @@ export function DataTableToolbar<TData>({
         </div>
 
         <Link
-          to="/organization/$orgName/store/$storeName/products/new"
+          to="/organization/$orgUrlSlug/store/$storeUrlSlug/products/new"
           params={(prev) => ({
             ...prev,
             orgName: prev.orgName!,

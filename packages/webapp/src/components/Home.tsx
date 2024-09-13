@@ -16,15 +16,16 @@ export default function Home() {
     queryFn: getAllOrganizations,
   });
 
-  console.log(data);
-
   useEffect(() => {
     if (data) {
       const organization = data[0];
 
       navigate({
-        to: "/organization/$orgName",
-        params: (prev) => ({ ...prev, orgName: organization.organizationUrl }),
+        to: "/organization/$orgUrlSlug",
+        params: (prev) => ({
+          ...prev,
+          orgUrlSlug: organization.organizationUrlSlug,
+        }),
       });
     }
   }, [data]);

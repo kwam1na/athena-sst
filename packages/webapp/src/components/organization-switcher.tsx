@@ -60,10 +60,10 @@ export default function OrganizationSwitcher({
     useState<OrganizationSelectItem | null>(null);
   const [open, setOpen] = useState(false);
 
-  const { orgName } = useParams({ strict: false });
+  const { orgUrlSlug } = useParams({ strict: false });
 
   const { data: stores } = useQuery({
-    queryKey: ["stores"],
+    queryKey: ["stores", selectedOrganization?.value],
     queryFn: () => getAllStores(selectedOrganization!.value),
     enabled: Boolean(selectedOrganization),
   });
@@ -75,7 +75,7 @@ export default function OrganizationSwitcher({
   }));
 
   const orgMatchedFromParams = items.find(
-    (org) => org.organizationUrlSlug == orgName
+    (org) => org.organizationUrlSlug == orgUrlSlug
   );
 
   const currentOrganization = formattedItems.find(
@@ -90,21 +90,21 @@ export default function OrganizationSwitcher({
 
       if (store) {
         navigate({
-          to: "/organization/$orgName/store/$storeName",
+          to: "/organization/$orgUrlSlug/store/$storeUrlSlug/products",
           params: (prev) => ({
             ...prev,
-            orgName: selectedOrganization.url,
-            storeName: store.storeUrlSlug,
+            orgUrlSlug: selectedOrganization.url,
+            storeUrlSlug: store.storeUrlSlug,
           }),
         });
 
         setStoreCurrency(store.currency);
       } else {
         navigate({
-          to: "/organization/$orgName/store",
+          to: "/organization/$orgUrlSlug/store",
           params: (prev) => ({
             ...prev,
-            orgName: selectedOrganization.url,
+            orgUrlSlug: selectedOrganization.url,
           }),
         });
       }

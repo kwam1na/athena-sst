@@ -7,14 +7,16 @@ export default function useGetActiveStore() {
   const { activeOrganization } = useGetActiveOrganization();
 
   const { data: stores, isLoading: isLoadingStores } = useQuery({
-    queryKey: ["stores"],
+    queryKey: ["stores", activeOrganization?.id],
     queryFn: () => getAllStores(activeOrganization!.id),
     enabled: Boolean(activeOrganization),
   });
 
-  const { storeName } = useParams({ strict: false });
+  const { storeUrlSlug } = useParams({ strict: false });
 
-  const activeStore = stores?.find((store) => store.storeUrlSlug == storeName);
+  const activeStore = stores?.find(
+    (store) => store.storeUrlSlug == storeUrlSlug
+  );
 
   return {
     activeStore,

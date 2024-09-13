@@ -25,6 +25,7 @@ import { deleteFiles, uploadProductImages } from "@/lib/imageUtils";
 import { ErrorPage } from "./states/error";
 import { AlertModal } from "./ui/modals/alert-modal";
 import { ActionModal } from "./ui/modals/action-modal";
+import useGetActiveStore from "@/hooks/useGetActiveStore";
 
 function ProductViewContent() {
   const { didProvideRequiredData, images, productData, updateError } =
@@ -40,6 +41,8 @@ function ProductViewContent() {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
+
+  const { activeStore } = useGetActiveStore();
 
   const {
     data: product,
@@ -57,13 +60,15 @@ function ProductViewContent() {
       toast(`Product '${productData.productName}' created`, {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", activeStore?.id],
+      });
       navigate({
-        to: "/organization/$orgName/store/$storeName/products",
+        to: "/organization/$orgUrlSlug/store/$storeUrlSlug/products",
         params: (prev) => ({
           ...prev,
-          storeName: prev.storeName!,
-          orgName: prev.orgName!,
+          storeUrlSlug: prev.storeUrlSlug!,
+          orgUrlSlug: prev.orgUrlSlug!,
         }),
       });
     },
@@ -83,16 +88,18 @@ function ProductViewContent() {
         description: <p className="text-destructive">{data?.warning}</p>,
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", activeStore?.id],
+      });
       queryClient.invalidateQueries({ queryKey: ["product", productId] });
 
       if (!data?.warning)
         navigate({
-          to: "/organization/$orgName/store/$storeName/products",
+          to: "/organization/$orgUrlSlug/store/$storeUrlSlug/products",
           params: (prev) => ({
             ...prev,
-            storeName: prev.storeName!,
-            orgName: prev.orgName!,
+            storeUrlSlug: prev.storeUrlSlug!,
+            orgUrlSlug: prev.orgUrlSlug!,
           }),
         });
     },
@@ -117,13 +124,15 @@ function ProductViewContent() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", activeStore?.id],
+      });
       navigate({
-        to: "/organization/$orgName/store/$storeName/products",
+        to: "/organization/$orgUrlSlug/store/$storeUrlSlug/products",
         params: (prev) => ({
           ...prev,
-          storeName: prev.storeName!,
-          orgName: prev.orgName!,
+          storeUrlSlug: prev.storeUrlSlug!,
+          orgUrlSlug: prev.orgUrlSlug!,
         }),
       });
     },
@@ -143,8 +152,8 @@ function ProductViewContent() {
     try {
       const data = productSchema.parse({
         ...productData,
-        currency: "ghs",
-        storeId: "1",
+        currency: activeStore?.currency,
+        storeId: activeStore?.id,
         images: imageUrls,
       });
 
@@ -171,8 +180,8 @@ function ProductViewContent() {
     try {
       const data = productSchema.parse({
         ...productData,
-        currency: "ghs",
-        storeId: "1",
+        currency: activeStore?.currency,
+        storeId: activeStore?.id,
         images: imageUrls,
       });
 
@@ -208,11 +217,11 @@ function ProductViewContent() {
     return (
       <div className="flex gap-2 h-[40px] justify-between">
         <Link
-          to="/organization/$orgName/store/$storeName/products"
+          to="/organization/$orgUrlSlug/store/$storeUrlSlug/products"
           params={(prev) => ({
             ...prev,
-            storeName: prev.storeName!,
-            orgName: prev.orgName!,
+            storeUrlSlug: prev.storeUrlSlug!,
+            orgUrlSlug: prev.orgUrlSlug!,
           })}
           className="flex items-center gap-2"
         >

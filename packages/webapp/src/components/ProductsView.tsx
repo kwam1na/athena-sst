@@ -5,6 +5,7 @@ import { getAllStores } from "@/api/stores";
 import { useParams } from "@tanstack/react-router";
 import NotFound from "./states/not-found/NotFound";
 import useGetActiveOrganization from "@/hooks/useGetActiveOrganization";
+import SingleLineError from "./states/error/SingleLineError";
 
 export default function ProductsView() {
   const Navigation = () => {
@@ -15,38 +16,53 @@ export default function ProductsView() {
     );
   };
 
-  const { storeName, orgName } = useParams({ strict: false });
+  const { storeUrlSlug, orgUrlSlug } = useParams({ strict: false });
 
-  const { activeOrganization, isLoadingOrganizations } =
+  const { activeOrganization, fetchOrganizationError, isLoadingOrganizations } =
     useGetActiveOrganization();
 
-  const { data: stores, isLoading: isLoadingStores } = useQuery({
-    queryKey: ["stores"],
+  const {
+    data: stores,
+    isLoading: isLoadingStores,
+    error: fetchStoreError,
+  } = useQuery({
+    queryKey: ["stores", activeOrganization?.id],
     queryFn: () => getAllStores(activeOrganization!.id),
     enabled: Boolean(activeOrganization),
   });
 
   const isValidStoreName =
-    stores && stores.some((store) => store.storeUrlSlug == storeName);
+    stores && stores.some((store) => store.storeUrlSlug == storeUrlSlug);
 
-  const isValidOrgName = activeOrganization?.organizationUrlSlug == orgName;
+  const isValidOrgName = activeOrganization?.organizationUrlSlug == orgUrlSlug;
 
-  const isInvalidStoreName = !isValidStoreName && storeName && !isLoadingStores;
+  const isInvalidStoreName =
+    !isValidStoreName && storeUrlSlug && !isLoadingStores && !fetchStoreError;
 
   const isInvalidOrgName =
-    !isValidOrgName && orgName && !isLoadingOrganizations;
+    !isValidOrgName &&
+    orgUrlSlug &&
+    !isLoadingOrganizations &&
+    !fetchOrganizationError;
 
-  const store = stores && stores.find((s) => s.storeUrlSlug == storeName);
+  const store = stores && stores.find((s) => s.storeUrlSlug == storeUrlSlug);
 
   return (
     <View className="bg-background" header={<Navigation />}>
       {isValidStoreName && isValidOrgName && store && (
         <Products store={store} />
       )}
-      {isInvalidOrgName ? (
-        <NotFound entity="organization" entityName={orgName} />
+      {fetchOrganizationError ? (
+        <SingleLineError message={fetchOrganizationError.message} />
       ) : (
-        isInvalidStoreName && <NotFound entity="store" entityName={storeName} />
+        fetchStoreError && <SingleLineError message={fetchStoreError.message} />
+      )}
+      {isInvalidOrgName ? (
+        <NotFound entity="organization" entityName={orgUrlSlug} />
+      ) : (
+        isInvalidStoreName && (
+          <NotFound entity="store" entityName={storeUrlSlug} />
+        )
       )}
     </View>
   );

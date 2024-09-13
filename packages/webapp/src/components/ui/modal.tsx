@@ -1,5 +1,4 @@
-"use client";
-
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import {
   Dialog,
   DialogContent,
@@ -55,6 +54,10 @@ export const Modal: React.FC<ModalProps> = ({
               <DialogDescription>{description}</DialogDescription>
             </DialogHeader>
           )}
+          <VisuallyHidden.Root>
+            <DialogTitle>{title}</DialogTitle>
+          </VisuallyHidden.Root>
+
           <div>{children}</div>
         </DialogContent>
       )}

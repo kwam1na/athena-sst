@@ -13,12 +13,14 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as OrganizationIndexImport } from './routes/organization/index'
-import { Route as OrganizationOrgNameIndexImport } from './routes/organization/$orgName/index'
-import { Route as OrganizationOrgNameStoreIndexImport } from './routes/organization/$orgName/store/index'
-import { Route as OrganizationOrgNameStoreStoreNameIndexImport } from './routes/organization/$orgName/store/$storeName/index'
-import { Route as OrganizationOrgNameStoreStoreNameProductsIndexImport } from './routes/organization/$orgName/store/$storeName/products/index'
-import { Route as OrganizationOrgNameStoreStoreNameProductsNewImport } from './routes/organization/$orgName/store/$storeName/products/new'
-import { Route as OrganizationOrgNameStoreStoreNameProductsProductIdImport } from './routes/organization/$orgName/store/$storeName/products/$productId'
+import { Route as OrganizationOrgUrlSlugIndexImport } from './routes/organization/$orgUrlSlug/index'
+import { Route as OrganizationOrgUrlSlugStoreIndexImport } from './routes/organization/$orgUrlSlug/store/index'
+import { Route as OrganizationOrgUrlSlugSettingsIndexImport } from './routes/organization/$orgUrlSlug/settings/index'
+import { Route as OrganizationOrgUrlSlugSettingsStoreUrlSlugImport } from './routes/organization/$orgUrlSlug/settings/$storeUrlSlug'
+import { Route as OrganizationOrgUrlSlugStoreStoreUrlSlugIndexImport } from './routes/organization/$orgUrlSlug/store/$storeUrlSlug/index'
+import { Route as OrganizationOrgUrlSlugStoreStoreUrlSlugProductsIndexImport } from './routes/organization/$orgUrlSlug/store/$storeUrlSlug/products/index'
+import { Route as OrganizationOrgUrlSlugStoreStoreUrlSlugProductsNewImport } from './routes/organization/$orgUrlSlug/store/$storeUrlSlug/products/new'
+import { Route as OrganizationOrgUrlSlugStoreStoreUrlSlugProductsProductIdImport } from './routes/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId'
 
 // Create/Update Routes
 
@@ -32,38 +34,51 @@ const OrganizationIndexRoute = OrganizationIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const OrganizationOrgNameIndexRoute = OrganizationOrgNameIndexImport.update({
-  path: '/organization/$orgName/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const OrganizationOrgNameStoreIndexRoute =
-  OrganizationOrgNameStoreIndexImport.update({
-    path: '/organization/$orgName/store/',
+const OrganizationOrgUrlSlugIndexRoute =
+  OrganizationOrgUrlSlugIndexImport.update({
+    path: '/organization/$orgUrlSlug/',
     getParentRoute: () => rootRoute,
   } as any)
 
-const OrganizationOrgNameStoreStoreNameIndexRoute =
-  OrganizationOrgNameStoreStoreNameIndexImport.update({
-    path: '/organization/$orgName/store/$storeName/',
+const OrganizationOrgUrlSlugStoreIndexRoute =
+  OrganizationOrgUrlSlugStoreIndexImport.update({
+    path: '/organization/$orgUrlSlug/store/',
     getParentRoute: () => rootRoute,
   } as any)
 
-const OrganizationOrgNameStoreStoreNameProductsIndexRoute =
-  OrganizationOrgNameStoreStoreNameProductsIndexImport.update({
-    path: '/organization/$orgName/store/$storeName/products/',
+const OrganizationOrgUrlSlugSettingsIndexRoute =
+  OrganizationOrgUrlSlugSettingsIndexImport.update({
+    path: '/organization/$orgUrlSlug/settings/',
     getParentRoute: () => rootRoute,
   } as any)
 
-const OrganizationOrgNameStoreStoreNameProductsNewRoute =
-  OrganizationOrgNameStoreStoreNameProductsNewImport.update({
-    path: '/organization/$orgName/store/$storeName/products/new',
+const OrganizationOrgUrlSlugSettingsStoreUrlSlugRoute =
+  OrganizationOrgUrlSlugSettingsStoreUrlSlugImport.update({
+    path: '/organization/$orgUrlSlug/settings/$storeUrlSlug',
     getParentRoute: () => rootRoute,
   } as any)
 
-const OrganizationOrgNameStoreStoreNameProductsProductIdRoute =
-  OrganizationOrgNameStoreStoreNameProductsProductIdImport.update({
-    path: '/organization/$orgName/store/$storeName/products/$productId',
+const OrganizationOrgUrlSlugStoreStoreUrlSlugIndexRoute =
+  OrganizationOrgUrlSlugStoreStoreUrlSlugIndexImport.update({
+    path: '/organization/$orgUrlSlug/store/$storeUrlSlug/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const OrganizationOrgUrlSlugStoreStoreUrlSlugProductsIndexRoute =
+  OrganizationOrgUrlSlugStoreStoreUrlSlugProductsIndexImport.update({
+    path: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const OrganizationOrgUrlSlugStoreStoreUrlSlugProductsNewRoute =
+  OrganizationOrgUrlSlugStoreStoreUrlSlugProductsNewImport.update({
+    path: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/new',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const OrganizationOrgUrlSlugStoreStoreUrlSlugProductsProductIdRoute =
+  OrganizationOrgUrlSlugStoreStoreUrlSlugProductsProductIdImport.update({
+    path: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -85,46 +100,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrganizationIndexImport
       parentRoute: typeof rootRoute
     }
-    '/organization/$orgName/': {
-      id: '/organization/$orgName/'
-      path: '/organization/$orgName'
-      fullPath: '/organization/$orgName'
-      preLoaderRoute: typeof OrganizationOrgNameIndexImport
+    '/organization/$orgUrlSlug/': {
+      id: '/organization/$orgUrlSlug/'
+      path: '/organization/$orgUrlSlug'
+      fullPath: '/organization/$orgUrlSlug'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugIndexImport
       parentRoute: typeof rootRoute
     }
-    '/organization/$orgName/store/': {
-      id: '/organization/$orgName/store/'
-      path: '/organization/$orgName/store'
-      fullPath: '/organization/$orgName/store'
-      preLoaderRoute: typeof OrganizationOrgNameStoreIndexImport
+    '/organization/$orgUrlSlug/settings/$storeUrlSlug': {
+      id: '/organization/$orgUrlSlug/settings/$storeUrlSlug'
+      path: '/organization/$orgUrlSlug/settings/$storeUrlSlug'
+      fullPath: '/organization/$orgUrlSlug/settings/$storeUrlSlug'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugSettingsStoreUrlSlugImport
       parentRoute: typeof rootRoute
     }
-    '/organization/$orgName/store/$storeName/': {
-      id: '/organization/$orgName/store/$storeName/'
-      path: '/organization/$orgName/store/$storeName'
-      fullPath: '/organization/$orgName/store/$storeName'
-      preLoaderRoute: typeof OrganizationOrgNameStoreStoreNameIndexImport
+    '/organization/$orgUrlSlug/settings/': {
+      id: '/organization/$orgUrlSlug/settings/'
+      path: '/organization/$orgUrlSlug/settings'
+      fullPath: '/organization/$orgUrlSlug/settings'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugSettingsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/organization/$orgName/store/$storeName/products/$productId': {
-      id: '/organization/$orgName/store/$storeName/products/$productId'
-      path: '/organization/$orgName/store/$storeName/products/$productId'
-      fullPath: '/organization/$orgName/store/$storeName/products/$productId'
-      preLoaderRoute: typeof OrganizationOrgNameStoreStoreNameProductsProductIdImport
+    '/organization/$orgUrlSlug/store/': {
+      id: '/organization/$orgUrlSlug/store/'
+      path: '/organization/$orgUrlSlug/store'
+      fullPath: '/organization/$orgUrlSlug/store'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugStoreIndexImport
       parentRoute: typeof rootRoute
     }
-    '/organization/$orgName/store/$storeName/products/new': {
-      id: '/organization/$orgName/store/$storeName/products/new'
-      path: '/organization/$orgName/store/$storeName/products/new'
-      fullPath: '/organization/$orgName/store/$storeName/products/new'
-      preLoaderRoute: typeof OrganizationOrgNameStoreStoreNameProductsNewImport
+    '/organization/$orgUrlSlug/store/$storeUrlSlug/': {
+      id: '/organization/$orgUrlSlug/store/$storeUrlSlug/'
+      path: '/organization/$orgUrlSlug/store/$storeUrlSlug'
+      fullPath: '/organization/$orgUrlSlug/store/$storeUrlSlug'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugStoreStoreUrlSlugIndexImport
       parentRoute: typeof rootRoute
     }
-    '/organization/$orgName/store/$storeName/products/': {
-      id: '/organization/$orgName/store/$storeName/products/'
-      path: '/organization/$orgName/store/$storeName/products'
-      fullPath: '/organization/$orgName/store/$storeName/products'
-      preLoaderRoute: typeof OrganizationOrgNameStoreStoreNameProductsIndexImport
+    '/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId': {
+      id: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId'
+      path: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId'
+      fullPath: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugStoreStoreUrlSlugProductsProductIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/organization/$orgUrlSlug/store/$storeUrlSlug/products/new': {
+      id: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/new'
+      path: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/new'
+      fullPath: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/new'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugStoreStoreUrlSlugProductsNewImport
+      parentRoute: typeof rootRoute
+    }
+    '/organization/$orgUrlSlug/store/$storeUrlSlug/products/': {
+      id: '/organization/$orgUrlSlug/store/$storeUrlSlug/products/'
+      path: '/organization/$orgUrlSlug/store/$storeUrlSlug/products'
+      fullPath: '/organization/$orgUrlSlug/store/$storeUrlSlug/products'
+      preLoaderRoute: typeof OrganizationOrgUrlSlugStoreStoreUrlSlugProductsIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -135,12 +164,14 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   OrganizationIndexRoute,
-  OrganizationOrgNameIndexRoute,
-  OrganizationOrgNameStoreIndexRoute,
-  OrganizationOrgNameStoreStoreNameIndexRoute,
-  OrganizationOrgNameStoreStoreNameProductsProductIdRoute,
-  OrganizationOrgNameStoreStoreNameProductsNewRoute,
-  OrganizationOrgNameStoreStoreNameProductsIndexRoute,
+  OrganizationOrgUrlSlugIndexRoute,
+  OrganizationOrgUrlSlugSettingsStoreUrlSlugRoute,
+  OrganizationOrgUrlSlugSettingsIndexRoute,
+  OrganizationOrgUrlSlugStoreIndexRoute,
+  OrganizationOrgUrlSlugStoreStoreUrlSlugIndexRoute,
+  OrganizationOrgUrlSlugStoreStoreUrlSlugProductsProductIdRoute,
+  OrganizationOrgUrlSlugStoreStoreUrlSlugProductsNewRoute,
+  OrganizationOrgUrlSlugStoreStoreUrlSlugProductsIndexRoute,
 })
 
 /* prettier-ignore-end */
@@ -153,12 +184,14 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/organization/",
-        "/organization/$orgName/",
-        "/organization/$orgName/store/",
-        "/organization/$orgName/store/$storeName/",
-        "/organization/$orgName/store/$storeName/products/$productId",
-        "/organization/$orgName/store/$storeName/products/new",
-        "/organization/$orgName/store/$storeName/products/"
+        "/organization/$orgUrlSlug/",
+        "/organization/$orgUrlSlug/settings/$storeUrlSlug",
+        "/organization/$orgUrlSlug/settings/",
+        "/organization/$orgUrlSlug/store/",
+        "/organization/$orgUrlSlug/store/$storeUrlSlug/",
+        "/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId",
+        "/organization/$orgUrlSlug/store/$storeUrlSlug/products/new",
+        "/organization/$orgUrlSlug/store/$storeUrlSlug/products/"
       ]
     },
     "/": {
@@ -167,23 +200,29 @@ export const routeTree = rootRoute.addChildren({
     "/organization/": {
       "filePath": "organization/index.tsx"
     },
-    "/organization/$orgName/": {
-      "filePath": "organization/$orgName/index.tsx"
+    "/organization/$orgUrlSlug/": {
+      "filePath": "organization/$orgUrlSlug/index.tsx"
     },
-    "/organization/$orgName/store/": {
-      "filePath": "organization/$orgName/store/index.tsx"
+    "/organization/$orgUrlSlug/settings/$storeUrlSlug": {
+      "filePath": "organization/$orgUrlSlug/settings/$storeUrlSlug.tsx"
     },
-    "/organization/$orgName/store/$storeName/": {
-      "filePath": "organization/$orgName/store/$storeName/index.tsx"
+    "/organization/$orgUrlSlug/settings/": {
+      "filePath": "organization/$orgUrlSlug/settings/index.tsx"
     },
-    "/organization/$orgName/store/$storeName/products/$productId": {
-      "filePath": "organization/$orgName/store/$storeName/products/$productId.tsx"
+    "/organization/$orgUrlSlug/store/": {
+      "filePath": "organization/$orgUrlSlug/store/index.tsx"
     },
-    "/organization/$orgName/store/$storeName/products/new": {
-      "filePath": "organization/$orgName/store/$storeName/products/new.tsx"
+    "/organization/$orgUrlSlug/store/$storeUrlSlug/": {
+      "filePath": "organization/$orgUrlSlug/store/$storeUrlSlug/index.tsx"
     },
-    "/organization/$orgName/store/$storeName/products/": {
-      "filePath": "organization/$orgName/store/$storeName/products/index.tsx"
+    "/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId": {
+      "filePath": "organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId.tsx"
+    },
+    "/organization/$orgUrlSlug/store/$storeUrlSlug/products/new": {
+      "filePath": "organization/$orgUrlSlug/store/$storeUrlSlug/products/new.tsx"
+    },
+    "/organization/$orgUrlSlug/store/$storeUrlSlug/products/": {
+      "filePath": "organization/$orgUrlSlug/store/$storeUrlSlug/products/index.tsx"
     }
   }
 }

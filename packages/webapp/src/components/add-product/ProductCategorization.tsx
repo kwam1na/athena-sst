@@ -43,7 +43,7 @@ function ProductCategorization() {
     isLoading: isLoadingCategories,
     error: fetchCategoriesError,
   } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["categories", activeStore?.id],
     queryFn: () => getAllCategories(activeStore!.id),
     enabled: Boolean(activeStore),
   });
@@ -53,7 +53,7 @@ function ProductCategorization() {
     isLoading: isLoadingSubcategories,
     error: fetchSubategoriesError,
   } = useQuery({
-    queryKey: ["subcategories"],
+    queryKey: ["subcategories", activeStore?.id],
     queryFn: () => getAllSubcategories(activeStore!.id),
     enabled: Boolean(activeStore),
   });

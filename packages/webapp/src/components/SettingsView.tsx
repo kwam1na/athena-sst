@@ -1,7 +1,6 @@
-import { Outlet } from "@tanstack/react-router";
 import View from "./View";
 
-export default function OrganizationsView() {
+export default function SettingsView() {
   const Navigation = () => {
     return (
       <div className="flex gap-2 h-[40px]">
@@ -11,9 +10,12 @@ export default function OrganizationsView() {
   };
 
   return (
-    <View className="bg-background" header={<Navigation />}>
-      <Outlet />
-      <span>Organizations View?</span>
+    <View
+      hideHeaderBottomBorder
+      className="bg-background"
+      header={<Navigation />}
+    >
+      <span>Settings</span>
     </View>
   );
 }

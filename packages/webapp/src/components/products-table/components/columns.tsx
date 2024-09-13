@@ -18,7 +18,7 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <div className="flex space-x-2">
           <Link
-            to="/organization/$orgName/store/$storeName/products/$productId"
+            to="/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId"
             params={(prev) => ({
               ...prev,
               orgName: prev.orgName!,

@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 
-import { productSchema } from "./data/schema";
 import { useNavigate } from "@tanstack/react-router";
 import { deleteProduct } from "@/api/product";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +17,7 @@ import { toast } from "sonner";
 import { Ban } from "lucide-react";
 import { useState } from "react";
 import { AlertModal } from "@/components/ui/modals/alert-modal";
+import { ProductResponseBody } from "@/lib/schemas/product";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,7 +32,7 @@ export function DataTableRowActions<TData>({
 
   const navigate = useNavigate();
 
-  const product = productSchema.parse(row.original);
+  const product = row.original as ProductResponseBody;
 
   const deleteItem = async () => {
     await deleteProduct(product.id);
@@ -45,7 +45,9 @@ export function DataTableRowActions<TData>({
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({
+        queryKey: ["products", product.storeId],
+      });
       setIsDeleteModalOpen(false);
     },
     onError: () => {
@@ -80,8 +82,13 @@ export function DataTableRowActions<TData>({
           <DropdownMenuItem
             onClick={() =>
               navigate({
-                to: "/products/$productId",
-                params: (prev) => ({ ...prev, productId: product.id }),
+                to: "/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId",
+                params: (prev) => ({
+                  ...prev,
+                  orgUrlSlug: prev.orgUrlSlug!,
+                  storeUrlSlug: prev.storeUrlSlug!,
+                  productId: product.id,
+                }),
               })
             }
           >

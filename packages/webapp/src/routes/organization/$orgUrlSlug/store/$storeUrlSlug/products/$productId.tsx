@@ -1,6 +1,6 @@
 import ProductView from "@/components/ProductView";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/organization/$orgName/store/$storeName/products/$productId")({
+export const Route = createFileRoute("/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId")({
   component: ProductView,
 });

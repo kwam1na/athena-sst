@@ -14,9 +14,7 @@ import { CategoryResponse } from "@/lib/schemas/category";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "../ui/loading-button";
 import { CheckCircledIcon, TrashIcon } from "@radix-ui/react-icons";
-import { SubcategoryResponse } from "@/lib/schemas/subcategory";
 import { toast } from "sonner";
-import { capitalizeFirstLetter } from "@/lib/utils";
 import {
   createSubcategory,
   deleteSubategory,
@@ -29,6 +27,7 @@ import {
   getAllCategories,
   updateCategory,
 } from "@/api/category";
+import useGetActiveStore from "@/hooks/useGetActiveStore";
 
 type Option = "category" | "subcategory";
 
@@ -60,12 +59,12 @@ function Sidebar({
 function CategoryManager() {
   const queryClient = useQueryClient();
 
-  //   const categoriesData = queryClient.getQueryData<CategoryResponse[]>([
-  //     "categories",
-  //   ]);
+  const { activeStore } = useGetActiveStore();
+
   const { data: categoriesData } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getAllCategories,
+    queryKey: ["categories", activeStore?.id],
+    queryFn: () => getAllCategories(activeStore!.id),
+    enabled: Boolean(activeStore),
   });
 
   const [name, setName] = useState<string | null>(null);
@@ -92,11 +91,11 @@ function CategoryManager() {
   }, [categoryId, categoryIdToRename]);
 
   const save = async () => {
-    if (!name) return;
+    if (!name || !activeStore) return;
 
     await createCategory({
       categoryName: name,
-      storeId: "1",
+      storeId: activeStore.id,
     });
   };
 
@@ -105,7 +104,7 @@ function CategoryManager() {
 
     await updateCategory(categoryIdToRename, {
       categoryName: updatedName,
-      storeId: "1",
+      storeId: activeStore?.id,
     });
   };
 
@@ -122,7 +121,9 @@ function CategoryManager() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({
+        queryKey: ["categories", activeStore?.id],
+      });
     },
     onError: () => {
       toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
@@ -136,7 +137,9 @@ function CategoryManager() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      queryClient.invalidateQueries({
+        queryKey: ["categories", activeStore?.id],
+      });
     },
     onError: () => {
       toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
@@ -150,7 +153,9 @@ function CategoryManager() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({
+        queryKey: ["categories", activeStore?.id],
+      });
     },
     onError: () => {
       toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
@@ -272,9 +277,12 @@ function CategoryManager() {
 function SubcategoryManager() {
   const queryClient = useQueryClient();
 
+  const { activeStore } = useGetActiveStore();
+
   const { data: subcategoriesData } = useQuery({
-    queryKey: ["subcategories"],
-    queryFn: getAllSubcategories,
+    queryKey: ["subcategories", activeStore?.id],
+    queryFn: () => getAllSubcategories(activeStore!.id),
+    enabled: Boolean(activeStore),
   });
 
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
@@ -307,6 +315,7 @@ function SubcategoryManager() {
 
   const categoriesData = queryClient.getQueryData<CategoryResponse[]>([
     "categories",
+    activeStore?.id,
   ]);
 
   const categories =
@@ -316,11 +325,11 @@ function SubcategoryManager() {
     })) || [];
 
   const save = async () => {
-    if (!name || !categoryId) return;
+    if (!name || !categoryId || !activeStore) return;
 
     await createSubcategory({
       subcategoryName: name,
-      storeId: "1",
+      storeId: activeStore?.id,
       categoryId,
     });
   };
@@ -330,7 +339,7 @@ function SubcategoryManager() {
 
     await updateSubcategory(subcategoryIdToRename, {
       subcategoryName: updatedName ?? undefined,
-      storeId: "1",
+      storeId: activeStore?.id,
       categoryId: newCategoryId ?? undefined,
     });
   };
@@ -348,7 +357,9 @@ function SubcategoryManager() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      queryClient.invalidateQueries({
+        queryKey: ["subcategories", activeStore?.id],
+      });
     },
     onError: () => {
       toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
@@ -362,7 +373,9 @@ function SubcategoryManager() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      queryClient.invalidateQueries({
+        queryKey: ["subcategories", activeStore?.id],
+      });
     },
     onError: () => {
       toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
@@ -376,7 +389,9 @@ function SubcategoryManager() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["subcategories"] });
+      queryClient.invalidateQueries({
+        queryKey: ["subcategories", activeStore?.id],
+      });
     },
     onError: () => {
       toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });

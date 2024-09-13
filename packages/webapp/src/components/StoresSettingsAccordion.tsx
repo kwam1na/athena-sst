@@ -10,13 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { Store } from "lucide-react";
 import { Button } from "./ui/button";
-import { useStoreModal } from "@/hooks/use-store-modal";
-import { PlusIcon } from "@radix-ui/react-icons";
-import { StoreActions } from "./StoreActions";
 
-export function StoresAccordion() {
-  const storeModal = useStoreModal();
-
+export function StoresSettingsAccordion() {
   const { activeOrganization } = useGetActiveOrganization();
 
   const { storeUrlSlug } = useParams({ strict: false });
@@ -35,19 +30,12 @@ export function StoresAccordion() {
       defaultValue="item-1"
     >
       <AccordionItem value="item-1" className="border-none">
-        <div className="flex w-full gap-2 items-center justify-between">
-          <div className="w-[85%]">
-            <AccordionTrigger>
-              <div className="flex items-center">
-                <Store className="w-4 h-4 text-muted-foreground mr-2" />
-                <p className="text-sm text-muted-foreground">Your stores</p>
-              </div>
-            </AccordionTrigger>
+        <AccordionTrigger>
+          <div className="flex items-center">
+            <Store className="w-4 h-4 text-muted-foreground mr-2" />
+            <p className="text-sm text-muted-foreground">Your stores</p>
           </div>
-          <div className="transition-opacity duration-300 opacity-50 hover:opacity-100">
-            <StoreActions />
-          </div>
-        </div>
+        </AccordionTrigger>
         {stores?.map((store) => {
           return (
             <AccordionContent
@@ -55,7 +43,7 @@ export function StoresAccordion() {
               className="w-full flex items-center"
             >
               <Link
-                to={"/organization/$orgUrlSlug/store/$storeUrlSlug/products"}
+                to={"/organization/$orgUrlSlug/settings/$storeUrlSlug"}
                 activeProps={{
                   className: "font-bold",
                 }}
@@ -75,12 +63,6 @@ export function StoresAccordion() {
             </AccordionContent>
           );
         })}
-        <AccordionContent>
-          <Button variant={"ghost"} onClick={() => storeModal.onOpen()}>
-            <PlusIcon className="w-4 h-4 mr-2" />
-            Create store
-          </Button>
-        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );

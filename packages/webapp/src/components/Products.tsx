@@ -13,7 +13,7 @@ import { StoreResponse } from "@/lib/schemas/store";
 
 export default function Products({ store }: { store: StoreResponse }) {
   const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", store.id],
     queryFn: () => getAllProducts(store.id),
   });
 
@@ -30,11 +30,11 @@ export default function Products({ store }: { store: StoreResponse }) {
           text={`No products in ${store.storeName}`}
           cta={
             <Link
-              to="/organization/$orgName/store/$storeName/products/new"
+              to="/organization/$orgUrlSlug/store/$storeUrlSlug/products/new"
               params={(prev) => ({
                 ...prev,
-                storeName: prev.storeName!,
-                orgName: prev.orgName!,
+                storeUrlSlug: prev.storeUrlSlug!,
+                orgUrlSlug: prev.orgUrlSlug!,
               })}
             >
               <Button variant={"outline"}>

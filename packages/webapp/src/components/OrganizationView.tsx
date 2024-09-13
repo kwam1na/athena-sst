@@ -20,12 +20,12 @@ export default function OrganizationView() {
     queryFn: getAllOrganizations,
   });
 
-  const { orgName } = useParams({ strict: false });
+  const { orgUrlSlug } = useParams({ strict: false });
 
   const isValidOrganizationName =
     organizations &&
     organizations.some(
-      (organization) => organization.organizationUrl == orgName
+      (organization) => organization.organizationUrlSlug == orgUrlSlug
     );
 
   // console.log(data);
@@ -35,7 +35,7 @@ export default function OrganizationView() {
   //     const organization = data[0];
 
   //     navigate({
-  //       to: "/organization/$orgName",
+  //       to: "/organization/$orgUrlSlug",
   //       params: (prev) => ({ ...prev, orgName: organization.organizationUrl }),
   //     });
   //   }
@@ -43,8 +43,8 @@ export default function OrganizationView() {
 
   return (
     <View className="bg-background" header={<Navigation />}>
-      {!isValidOrganizationName && orgName && !isLoading && (
-        <NotFound entity="organization" entityName={orgName} />
+      {!isValidOrganizationName && orgUrlSlug && !isLoading && (
+        <NotFound entity="organization" entityName={orgUrlSlug} />
       )}
     </View>
   );
