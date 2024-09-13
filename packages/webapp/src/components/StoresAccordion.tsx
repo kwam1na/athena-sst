@@ -44,9 +44,11 @@ export function StoresAccordion() {
               </div>
             </AccordionTrigger>
           </div>
-          <div className="transition-opacity duration-300 opacity-50 hover:opacity-100">
-            <StoreActions />
-          </div>
+          {stores && stores.length > 0 && (
+            <div className="transition-opacity duration-300 opacity-50 hover:opacity-100">
+              <StoreActions />
+            </div>
+          )}
         </div>
         {stores?.map((store) => {
           return (

@@ -12,7 +12,7 @@ export async function getAllSubcategories(
   const response = await fetch(`${baseUrl}?storeId=${storeId}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching subcategories.");
+    throw new Error("Error loading subcategories.");
   }
 
   const data = await response.json();
@@ -24,7 +24,7 @@ export async function getSubategory(id: string): Promise<SubcategoryResponse> {
   const response = await fetch(`${baseUrl}/${id}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching subcategory.");
+    throw new Error("Error loading subcategory.");
   }
 
   return await response.json();

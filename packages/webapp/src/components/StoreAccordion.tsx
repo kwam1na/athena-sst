@@ -20,13 +20,13 @@ export function StoreAccordion() {
     enabled: Boolean(activeOrganization),
   });
 
+  const router = useRouter();
+
   const { storeUrlSlug } = useParams({ strict: false });
 
   const matchedStore = stores?.find((s) => s.storeUrlSlug == storeUrlSlug);
 
-  if (stores?.length == 0) return null;
-
-  const router = useRouter();
+  if (stores?.length == 0 || !stores || !matchedStore) return null;
 
   const currentPath = router.state.location.pathname;
 

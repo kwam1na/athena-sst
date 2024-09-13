@@ -9,7 +9,7 @@ export async function getAllCategories(
   const response = await fetch(`${baseUrl}?storeId=${storeId}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching categories.");
+    throw new Error("Error loading categories.");
   }
 
   const data = await response.json();
@@ -21,7 +21,7 @@ export async function getCategory(id: string): Promise<CategoryResponse> {
   const response = await fetch(`${baseUrl}/${id}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching category.");
+    throw new Error("Error loading category.");
   }
 
   return await response.json();

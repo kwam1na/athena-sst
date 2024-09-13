@@ -9,7 +9,7 @@ export async function getAllStores(
   const response = await fetch(`${baseUrl}?organizationId=${organizationId}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching stores.");
+    throw new Error("Error loading stores.");
   }
 
   const data = await response.json();
@@ -21,7 +21,7 @@ export async function getStore(id: string): Promise<StoreResponse> {
   const response = await fetch(`${baseUrl}/${id}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching store.");
+    throw new Error("Error loading store.");
   }
 
   return await response.json();

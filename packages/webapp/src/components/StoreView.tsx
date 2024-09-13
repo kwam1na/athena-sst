@@ -10,6 +10,8 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { useStoreModal } from "@/hooks/use-store-modal";
 import useGetActiveOrganization from "@/hooks/useGetActiveOrganization";
 import { useEffect } from "react";
+import SingleLineError from "./states/error/SingleLineError";
+import NotFound from "./states/not-found/NotFound";
 
 export default function StoreView() {
   const Navigation = () => {
@@ -24,9 +26,12 @@ export default function StoreView() {
 
   const navigate = useNavigate();
 
-  const { activeOrganization } = useGetActiveOrganization();
+  const { orgUrlSlug } = useParams({ strict: false });
 
-  const { data: stores } = useQuery({
+  const { activeOrganization, fetchOrganizationError, isLoadingOrganizations } =
+    useGetActiveOrganization();
+
+  const { data: stores, error: fetchStoresError } = useQuery({
     queryKey: ["stores", activeOrganization?.id],
     queryFn: () => getAllStores(activeOrganization!.id),
     enabled: Boolean(activeOrganization),
@@ -47,9 +52,13 @@ export default function StoreView() {
     }
   }, [stores]);
 
+  const error = fetchStoresError || fetchOrganizationError;
+
+  const isInvalidOrgName = !isLoadingOrganizations && !activeOrganization;
+
   return (
     <View className="bg-background" header={<Navigation />}>
-      {stores && stores.length == 0 && (
+      {stores && stores.length == 0 && !error && (
         <EmptyState
           icon={<StoreIcon className="w-16 h-16 text-muted-foreground" />}
           text={`No stores for ${activeOrganization?.organizationName}`}
@@ -60,6 +69,10 @@ export default function StoreView() {
             </Button>
           }
         />
+      )}
+      {error && <SingleLineError message={error.message} />}
+      {isInvalidOrgName && orgUrlSlug && (
+        <NotFound entity="organization" entityName={orgUrlSlug} />
       )}
     </View>
   );

@@ -13,7 +13,7 @@ export async function getAllProducts(
   const response = await fetch(`${baseUrl}?storeId=${storeId}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching products.");
+    throw new Error("Error loading products.");
   }
 
   const data = await response.json();
@@ -24,11 +24,13 @@ export async function getAllProducts(
 export async function getProduct(id: string): Promise<ProductResponseBody> {
   const response = await fetch(`${baseUrl}/${id}`);
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error fetching product.");
+    throw new Error(res.error || "Error loading product.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function createProduct(

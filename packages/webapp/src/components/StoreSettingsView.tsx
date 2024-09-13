@@ -4,10 +4,10 @@ import { Separator } from "./ui/separator";
 import View from "./View";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Ban, CheckCircle2 } from "lucide-react";
-import { deleteStore, updateStore } from "@/api/stores";
+import { deleteStore, getAllStores, updateStore } from "@/api/stores";
 import {
   Form,
   FormControl,
@@ -152,6 +152,11 @@ const DeleteStore = ({ store }: { store: StoreResponse }) => {
 
   const navigate = useNavigate();
 
+  const { data: stores } = useQuery({
+    queryKey: ["stores", store.organizationId],
+    queryFn: () => getAllStores(store.organizationId),
+  });
+
   const handleDeleteStore = async () => {
     return await deleteStore(store.id);
   };
@@ -185,11 +190,19 @@ const DeleteStore = ({ store }: { store: StoreResponse }) => {
     <div className="space-y-4">
       <div className="space-y-4">
         <p className="font-medium">Delete store</p>
-        <p className="text-muted-foreground">This action cannot be undone.</p>
+        {stores && stores.length > 1 && (
+          <p className="text-muted-foreground">This action cannot be undone.</p>
+        )}
+        {stores && stores.length == 1 && (
+          <p className="text-muted-foreground">
+            This is your organization's only store. It cannot be deleted.
+          </p>
+        )}
       </div>
 
       <LoadingButton
         variant={"destructive"}
+        disabled={stores && stores.length == 1}
         isLoading={deleteMutation.isPending}
         onClick={() => deleteMutation.mutate()}
       >

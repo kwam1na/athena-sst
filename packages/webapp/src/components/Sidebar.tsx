@@ -77,7 +77,7 @@ const Sidebar = () => {
   const isOnSettings = currentPath.includes("settings");
 
   return (
-    <section className="bg-background min-w-[300px] flex-none space-y-4 h-full border border-1 rounded-md">
+    <section className="bg-background min-w-[380px] flex-none space-y-4 h-full border border-1 rounded-md">
       {!isOnSettings && <Header />}
       {isOnSettings && <SettingsHeader />}
 

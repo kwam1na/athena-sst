@@ -10,7 +10,7 @@ export async function getAllOrganizations(): Promise<OrganizationResponse[]> {
   const response = await fetch(`${baseUrl}?userId=1`);
 
   if (!response.ok) {
-    throw new Error("Error fetching organizations.");
+    throw new Error("Error loading organizations.");
   }
 
   const data = await response.json();
@@ -24,7 +24,7 @@ export async function getOrganization(
   const response = await fetch(`${baseUrl}/${id}`);
 
   if (!response.ok) {
-    throw new Error("Error fetching organization.");
+    throw new Error("Error loading organization.");
   }
 
   return await response.json();

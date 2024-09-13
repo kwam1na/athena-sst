@@ -36,14 +36,15 @@ export default function ProductsView() {
 
   const isValidOrgName = activeOrganization?.organizationUrlSlug == orgUrlSlug;
 
+  const isLoading = isLoadingOrganizations || isLoadingStores;
+
+  const error = fetchOrganizationError || fetchStoreError;
+
   const isInvalidStoreName =
-    !isValidStoreName && storeUrlSlug && !isLoadingStores && !fetchStoreError;
+    !isValidStoreName && storeUrlSlug && !isLoading && !error;
 
   const isInvalidOrgName =
-    !isValidOrgName &&
-    orgUrlSlug &&
-    !isLoadingOrganizations &&
-    !fetchOrganizationError;
+    !isValidOrgName && orgUrlSlug && !isLoading && !error;
 
   const store = stores && stores.find((s) => s.storeUrlSlug == storeUrlSlug);
 
@@ -52,11 +53,7 @@ export default function ProductsView() {
       {isValidStoreName && isValidOrgName && store && (
         <Products store={store} />
       )}
-      {fetchOrganizationError ? (
-        <SingleLineError message={fetchOrganizationError.message} />
-      ) : (
-        fetchStoreError && <SingleLineError message={fetchStoreError.message} />
-      )}
+      {error && <SingleLineError message={error.message} />}
       {isInvalidOrgName ? (
         <NotFound entity="organization" entityName={orgUrlSlug} />
       ) : (

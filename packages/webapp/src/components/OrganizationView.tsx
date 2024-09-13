@@ -3,6 +3,7 @@ import View from "./View";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import NotFound from "./states/not-found/NotFound";
+import SingleLineError from "./states/error/SingleLineError";
 
 export default function OrganizationView() {
   const Navigation = () => {
@@ -15,7 +16,11 @@ export default function OrganizationView() {
 
   // const navigate = useNavigate();
 
-  const { data: organizations, isLoading } = useQuery({
+  const {
+    data: organizations,
+    isLoading,
+    error: fetchOrganizationsError,
+  } = useQuery({
     queryKey: ["organizations"],
     queryFn: getAllOrganizations,
   });
@@ -43,8 +48,14 @@ export default function OrganizationView() {
 
   return (
     <View className="bg-background" header={<Navigation />}>
-      {!isValidOrganizationName && orgUrlSlug && !isLoading && (
-        <NotFound entity="organization" entityName={orgUrlSlug} />
+      {!isValidOrganizationName &&
+        orgUrlSlug &&
+        !isLoading &&
+        !fetchOrganizationsError && (
+          <NotFound entity="organization" entityName={orgUrlSlug} />
+        )}
+      {fetchOrganizationsError && (
+        <SingleLineError message={fetchOrganizationsError.message} />
       )}
     </View>
   );
