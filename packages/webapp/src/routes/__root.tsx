@@ -7,6 +7,7 @@ import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import Sidebar from "../components/Sidebar";
+import { StoreModal } from "@/components/ui/modals/store-modal";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -25,6 +26,7 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <div className="flex gap-4 h-screen p-4 bg-stone-50">
+      <StoreModal />
       <Sidebar />
       <div className="flex-grow">
         <Outlet />

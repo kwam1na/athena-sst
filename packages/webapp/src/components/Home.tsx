@@ -1,24 +1,37 @@
+import { useNavigate } from "@tanstack/react-router";
 import View from "./View";
+import { useQuery } from "@tanstack/react-query";
+import { getAllOrganizations } from "@/api/organization";
+import { useEffect } from "react";
 
 export default function Home() {
   const Navigation = () => {
-    return (
-      <div className="flex gap-2">
-        <div className="w-[80px] h-[40px] bg-red-400"></div>
-        <div className="w-[80px] h-[40px] bg-green-400"></div>
-      </div>
-    );
+    return <div className="flex gap-2 h-[40px]"></div>;
   };
 
-  const renderLander = () => (
-    <div className="flex flex-col">
-      {/* {[...Array(80)].map((_, i) => (
-        <p key={i} className="mb-4">
-          Note {i + 1}
-        </p>
-      ))} */}
-    </div>
-  );
+  const navigate = useNavigate();
 
-  return <View header={<Navigation />}>{renderLander()}</View>;
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ["organizations"],
+    queryFn: getAllOrganizations,
+  });
+
+  console.log(data);
+
+  useEffect(() => {
+    if (data) {
+      const organization = data[0];
+
+      navigate({
+        to: "/organization/$orgName",
+        params: (prev) => ({ ...prev, orgName: organization.organizationUrl }),
+      });
+    }
+  }, [data]);
+
+  return (
+    <View header={<Navigation />}>
+      <span>Home</span>
+    </View>
+  );
 }

@@ -3,8 +3,10 @@ import { CategoryResponse, CategoryType } from "@/lib/schemas/category";
 
 const baseUrl = `${config.apiGateway.URL}/categories`;
 
-export async function getAllCategories(): Promise<CategoryResponse[]> {
-  const response = await fetch(`${baseUrl}?storeId=1`);
+export async function getAllCategories(
+  storeId: string
+): Promise<CategoryResponse[]> {
+  const response = await fetch(`${baseUrl}?storeId=${storeId}`);
 
   if (!response.ok) {
     throw new Error("Error fetching categories.");

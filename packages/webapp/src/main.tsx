@@ -5,6 +5,9 @@ import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import React from "react";
 import { Toaster } from "./components/ui/sonner";
+import { CurrencyProvider } from "./components/providers/currency-provider";
+import { UserProvider } from "./contexts/UserContext";
+import { StoreModal } from "./components/ui/modals/store-modal";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,8 +39,13 @@ declare module "@tanstack/react-router" {
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Toaster />
-      <RouterProvider router={router} />
+      <CurrencyProvider>
+        <UserProvider>
+          <Toaster />
+          <RouterProvider router={router} />
+          {/* <StoreModal /> */}
+        </UserProvider>
+      </CurrencyProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );

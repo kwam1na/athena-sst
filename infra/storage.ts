@@ -6,11 +6,19 @@ export const table = new sst.aws.Dynamo("InventoryDB", {
   fields: {
     pk: "string",
     storeId: "string",
+    organizationId: "string",
+    createdByUserId: "string",
   },
   primaryIndex: { hashKey: "pk" },
   globalIndexes: {
     byStoreId: {
       hashKey: "storeId",
+    },
+    byOrganizationId: {
+      hashKey: "organizationId",
+    },
+    byCreatedByUserId: {
+      hashKey: "createdByUserId",
     },
   },
 });

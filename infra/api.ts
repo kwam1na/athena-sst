@@ -13,6 +13,32 @@ export const api = new sst.aws.ApiGatewayV2("Api", {
   },
 });
 
+// Organization
+api.route(
+  "POST /organizations",
+  "packages/lambdas/src/organizations/create.main"
+);
+api.route(
+  "PUT /organizations/{id}",
+  "packages/lambdas/src/organizations/update.main"
+);
+api.route(
+  "GET /organizations/{id}",
+  "packages/lambdas/src/organizations/get.main"
+);
+api.route("GET /organizations", "packages/lambdas/src/organizations/list.main");
+api.route(
+  "DELETE /organizations/{id}",
+  "packages/lambdas/src/organizations/delete.main"
+);
+
+// Stores
+api.route("POST /stores", "packages/lambdas/src/stores/create.main");
+api.route("PUT /stores/{id}", "packages/lambdas/src/stores/update.main");
+api.route("GET /stores/{id}", "packages/lambdas/src/stores/get.main");
+api.route("GET /stores", "packages/lambdas/src/stores/list.main");
+api.route("DELETE /stores/{id}", "packages/lambdas/src/stores/delete.main");
+
 // Products
 api.route("POST /products", "packages/lambdas/src/products/create.main");
 api.route("PUT /products/{id}", "packages/lambdas/src/products/update.main");

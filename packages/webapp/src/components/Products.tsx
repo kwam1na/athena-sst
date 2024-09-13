@@ -9,11 +9,12 @@ import { PackageXIcon } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { StoreResponse } from "@/lib/schemas/store";
 
-export default function Products() {
+export default function Products({ store }: { store: StoreResponse }) {
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ["products"],
-    queryFn: getAllProducts,
+    queryFn: () => getAllProducts(store.id),
   });
 
   return (
@@ -25,10 +26,17 @@ export default function Products() {
       {error && <ErrorPage title={error.message} />}
       {data && data.length == 0 && !isFetching && (
         <EmptyState
-          icon={<PackageXIcon className="w-32 h-32 text-muted-foreground" />}
-          text={"No products added"}
+          icon={<PackageXIcon className="w-16 h-16 text-muted-foreground" />}
+          text={`No products in ${store.storeName}`}
           cta={
-            <Link to="/products/new">
+            <Link
+              to="/organization/$orgName/store/$storeName/products/new"
+              params={(prev) => ({
+                ...prev,
+                storeName: prev.storeName!,
+                orgName: prev.orgName!,
+              })}
+            >
               <Button variant={"outline"}>
                 <PlusIcon className="w-4 h-4 mr-2" />
                 Add product

@@ -20,11 +20,11 @@ import {
   updateProduct,
 } from "@/api/product";
 import { LoadingButton } from "./ui/loading-button";
-import { AlertModal } from "./ui/alert-modal";
 import { useState } from "react";
 import { deleteFiles, uploadProductImages } from "@/lib/imageUtils";
-import { ActionModal } from "./ui/action-modal";
 import { ErrorPage } from "./states/error";
+import { AlertModal } from "./ui/modals/alert-modal";
+import { ActionModal } from "./ui/modals/action-modal";
 
 function ProductViewContent() {
   const { didProvideRequiredData, images, productData, updateError } =
@@ -58,7 +58,14 @@ function ProductViewContent() {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      navigate({ to: "/products" });
+      navigate({
+        to: "/organization/$orgName/store/$storeName/products",
+        params: (prev) => ({
+          ...prev,
+          storeName: prev.storeName!,
+          orgName: prev.orgName!,
+        }),
+      });
     },
     onError: (e) => {
       if (e instanceof ZodError) return;
@@ -79,7 +86,15 @@ function ProductViewContent() {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["product", productId] });
 
-      if (!data?.warning) navigate({ to: "/products" });
+      if (!data?.warning)
+        navigate({
+          to: "/organization/$orgName/store/$storeName/products",
+          params: (prev) => ({
+            ...prev,
+            storeName: prev.storeName!,
+            orgName: prev.orgName!,
+          }),
+        });
     },
     onError: (e) => {
       if (e instanceof ZodError) return;
@@ -103,7 +118,14 @@ function ProductViewContent() {
       });
 
       queryClient.invalidateQueries({ queryKey: ["products"] });
-      navigate({ to: "/products" });
+      navigate({
+        to: "/organization/$orgName/store/$storeName/products",
+        params: (prev) => ({
+          ...prev,
+          storeName: prev.storeName!,
+          orgName: prev.orgName!,
+        }),
+      });
     },
     onError: (e) => {
       toast("Something went wrong", {
@@ -185,7 +207,15 @@ function ProductViewContent() {
 
     return (
       <div className="flex gap-2 h-[40px] justify-between">
-        <Link to="/products" className="flex items-center gap-2">
+        <Link
+          to="/organization/$orgName/store/$storeName/products"
+          params={(prev) => ({
+            ...prev,
+            storeName: prev.storeName!,
+            orgName: prev.orgName!,
+          })}
+          className="flex items-center gap-2"
+        >
           <Button variant="ghost" className="h-8 px-2 lg:px-3 ">
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>

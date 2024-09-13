@@ -6,25 +6,18 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 
-import { labels } from "./data/data";
 import { productSchema } from "./data/schema";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { deleteProduct } from "@/api/product";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Ban } from "lucide-react";
-import { AlertModal } from "@/components/ui/alert-modal";
 import { useState } from "react";
+import { AlertModal } from "@/components/ui/modals/alert-modal";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;

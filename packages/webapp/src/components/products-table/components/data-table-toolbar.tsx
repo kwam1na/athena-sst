@@ -45,7 +45,15 @@ export function DataTableToolbar<TData>({
           )}
         </div>
 
-        <Link to="/products/new" className="pr-2">
+        <Link
+          to="/organization/$orgName/store/$storeName/products/new"
+          params={(prev) => ({
+            ...prev,
+            orgName: prev.orgName!,
+            storeName: prev.storeName!,
+          })}
+          className="pr-2"
+        >
           <Button
             variant="ghost"
             onClick={() => table.resetColumnFilters()}

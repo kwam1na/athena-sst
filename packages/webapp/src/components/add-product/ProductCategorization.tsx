@@ -24,6 +24,7 @@ import { useState } from "react";
 import CategorySubcategoryManager from "./CategorySubcategoryManager";
 import { CogIcon } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
+import useGetActiveStore from "@/hooks/useGetActiveStore";
 
 function ProductCategorization() {
   const categoryId = "categoryId";
@@ -35,13 +36,16 @@ function ProductCategorization() {
   const categoryError = getErrorForField(error, categoryId);
   const subcategoryError = getErrorForField(error, subcategoryId);
 
+  const { activeStore } = useGetActiveStore();
+
   const {
     data: categoriesData,
     isLoading: isLoadingCategories,
     error: fetchCategoriesError,
   } = useQuery({
     queryKey: ["categories"],
-    queryFn: getAllCategories,
+    queryFn: () => getAllCategories(activeStore!.id),
+    enabled: Boolean(activeStore),
   });
 
   const {
@@ -50,7 +54,8 @@ function ProductCategorization() {
     error: fetchSubategoriesError,
   } = useQuery({
     queryKey: ["subcategories"],
-    queryFn: getAllSubcategories,
+    queryFn: () => getAllSubcategories(activeStore!.id),
+    enabled: Boolean(activeStore),
   });
 
   const categories =

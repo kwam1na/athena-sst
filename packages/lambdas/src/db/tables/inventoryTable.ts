@@ -14,6 +14,14 @@ const InventoryTable = new Table({
       type: "global",
       partitionKey: { name: "storeId", type: "string" },
     },
+    byOrganizationId: {
+      type: "global",
+      partitionKey: { name: "organizationId", type: "string" },
+    },
+    byCreatedByUserId: {
+      type: "global",
+      partitionKey: { name: "createdByUserId", type: "string" },
+    },
   },
 });
 

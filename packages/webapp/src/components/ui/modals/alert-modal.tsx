@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
-import { LoadingButton } from "../ui/loading-button";
+import { LoadingButton } from "../loading-button";
 
 interface AlertModalProps {
   ctaText?: string;

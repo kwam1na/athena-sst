@@ -46,4 +46,8 @@ export module Util {
 
     return `${categoryCode}-${subcategoryCode}-${counter}`;
   }
+
+  export function getUrlName(input: string): string {
+    return input.trim().toLowerCase().replace(/\s+/g, "-");
+  }
 }

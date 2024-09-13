@@ -6,8 +6,10 @@ import {
 
 const baseUrl = `${config.apiGateway.URL}/subcategories`;
 
-export async function getAllSubcategories(): Promise<SubcategoryResponse[]> {
-  const response = await fetch(`${baseUrl}?storeId=1`);
+export async function getAllSubcategories(
+  storeId: string
+): Promise<SubcategoryResponse[]> {
+  const response = await fetch(`${baseUrl}?storeId=${storeId}`);
 
   if (!response.ok) {
     throw new Error("Error fetching subcategories.");

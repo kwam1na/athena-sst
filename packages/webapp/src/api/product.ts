@@ -1,10 +1,16 @@
 import config from "@/config";
-import { ProductResponse, ProductType } from "@/lib/schemas/product";
+import {
+  ProductResponse,
+  ProductResponseBody,
+  ProductType,
+} from "@/lib/schemas/product";
 
 const baseUrl = `${config.apiGateway.URL}/products`;
 
-export async function getAllProducts(): Promise<ProductResponse[]> {
-  const response = await fetch(`${baseUrl}?storeId=1`);
+export async function getAllProducts(
+  storeId: string
+): Promise<ProductResponseBody[]> {
+  const response = await fetch(`${baseUrl}?storeId=${storeId}`);
 
   if (!response.ok) {
     throw new Error("Error fetching products.");
@@ -15,7 +21,7 @@ export async function getAllProducts(): Promise<ProductResponse[]> {
   return data.products;
 }
 
-export async function getProduct(id: string): Promise<ProductResponse> {
+export async function getProduct(id: string): Promise<ProductResponseBody> {
   const response = await fetch(`${baseUrl}/${id}`);
 
   if (!response.ok) {
@@ -27,7 +33,7 @@ export async function getProduct(id: string): Promise<ProductResponse> {
 
 export async function createProduct(
   data: ProductType
-): Promise<ProductResponse> {
+): Promise<ProductResponseBody> {
   const response = await fetch(baseUrl, {
     method: "POST",
     body: JSON.stringify(data),
