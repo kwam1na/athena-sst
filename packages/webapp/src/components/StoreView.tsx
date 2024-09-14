@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import View from "./View";
-import { getAllOrganizations } from "@/api/organization";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { getAllStores } from "@/api/stores";
 import { EmptyState } from "./states/empty/empty-state";
@@ -12,6 +11,7 @@ import useGetActiveOrganization from "@/hooks/useGetActiveOrganization";
 import { useEffect } from "react";
 import SingleLineError from "./states/error/SingleLineError";
 import NotFound from "./states/not-found/NotFound";
+import Spinner from "./ui/spinner";
 
 export default function StoreView() {
   const Navigation = () => {
@@ -31,7 +31,11 @@ export default function StoreView() {
   const { activeOrganization, fetchOrganizationError, isLoadingOrganizations } =
     useGetActiveOrganization();
 
-  const { data: stores, error: fetchStoresError } = useQuery({
+  const {
+    data: stores,
+    error: fetchStoresError,
+    isLoading: isLoadingStores,
+  } = useQuery({
     queryKey: ["stores", activeOrganization?.id],
     queryFn: () => getAllStores(activeOrganization!.id),
     enabled: Boolean(activeOrganization),
@@ -56,12 +60,21 @@ export default function StoreView() {
 
   const isInvalidOrgName = !isLoadingOrganizations && !activeOrganization;
 
+  const isLoading = isLoadingOrganizations || isLoadingStores;
+
   return (
     <View className="bg-background" header={<Navigation />}>
       {stores && stores.length == 0 && !error && (
         <EmptyState
           icon={<StoreIcon className="w-16 h-16 text-muted-foreground" />}
-          text={`No stores for ${activeOrganization?.organizationName}`}
+          text={
+            <div className="flex gap-1 text-sm">
+              <p className="text-muted-foreground">No stores for</p>
+              <p className="font-medium">
+                {activeOrganization?.organizationName}
+              </p>
+            </div>
+          }
           cta={
             <Button variant={"outline"} onClick={() => storeModal.onOpen()}>
               <PlusIcon className="w-4 h-4 mr-2" />
@@ -74,6 +87,7 @@ export default function StoreView() {
       {isInvalidOrgName && orgUrlSlug && (
         <NotFound entity="organization" entityName={orgUrlSlug} />
       )}
+      {isLoading && <Spinner />}
     </View>
   );
 }

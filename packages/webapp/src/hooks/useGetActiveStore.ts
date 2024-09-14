@@ -6,7 +6,11 @@ import useGetActiveOrganization from "./useGetActiveOrganization";
 export default function useGetActiveStore() {
   const { activeOrganization } = useGetActiveOrganization();
 
-  const { data: stores, isLoading: isLoadingStores } = useQuery({
+  const {
+    data: stores,
+    isLoading: isLoadingStores,
+    isFetching,
+  } = useQuery({
     queryKey: ["stores", activeOrganization?.id],
     queryFn: () => getAllStores(activeOrganization!.id),
     enabled: Boolean(activeOrganization),
@@ -20,6 +24,6 @@ export default function useGetActiveStore() {
 
   return {
     activeStore,
-    isLoadingStores,
+    isLoadingStores: isLoadingStores || isFetching,
   };
 }

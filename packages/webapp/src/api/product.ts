@@ -75,10 +75,7 @@ export async function deleteProduct(id: string, storeId: string) {
   });
 
   // delete images in s3
-  const deleteImagesResponse = await deleteDirectoryInS3(
-    config.s3.BUCKET,
-    `${storeId}/${id}`
-  );
+  const deleteImagesResponse = await deleteDirectoryInS3(`${storeId}/${id}`);
 
   if (deleteImagesResponse.error) {
     throw new Error(

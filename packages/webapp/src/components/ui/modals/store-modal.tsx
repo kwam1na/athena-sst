@@ -63,7 +63,6 @@ export const StoreModal = () => {
       queryClient.invalidateQueries({
         queryKey: ["stores", activeOrganization?.id],
       });
-      storeModal.onClose();
       form.reset();
 
       navigate({
@@ -74,6 +73,8 @@ export const StoreModal = () => {
           storeUrlSlug: store.storeUrlSlug,
         }),
       });
+
+      storeModal.onClose();
     },
     onError: (e) => {
       toast("Something went wrong", {

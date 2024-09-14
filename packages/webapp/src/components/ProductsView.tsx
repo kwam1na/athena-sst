@@ -25,6 +25,7 @@ export default function ProductsView() {
   const {
     data: stores,
     isLoading: isLoadingStores,
+    isFetching: isFetchingStores,
     error: fetchStoreError,
   } = useQuery({
     queryKey: ["stores", activeOrganization?.id],
@@ -37,7 +38,8 @@ export default function ProductsView() {
 
   const isValidOrgName = activeOrganization?.organizationUrlSlug == orgUrlSlug;
 
-  const isLoading = isLoadingOrganizations || isLoadingStores;
+  const isLoading =
+    isLoadingOrganizations || isLoadingStores || isFetchingStores;
 
   const error = fetchOrganizationError || fetchStoreError;
 

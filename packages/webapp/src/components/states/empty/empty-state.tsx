@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 
 interface EmptyStateProps {
   icon: React.ReactNode;
-  text: string;
+  text: React.ReactNode | string;
   hideButtonIcon?: boolean;
   cta?: React.ReactNode;
   action?: {
@@ -42,7 +42,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <div className="flex flex-col items-center justify-center h-[50vh] gap-4">
       <div>{icon}</div>
-      <p className="text-sm text-center text-muted-foreground">{text}</p>
+      {typeof text == "string" ? (
+        <p className="text-sm text-center text-muted-foreground">{text}</p>
+      ) : (
+        text
+      )}
       {action && (
         <Button onClick={onClick}>
           {!hideButtonIcon && <Plus className="mr-2 h-4 w-4" />}{" "}

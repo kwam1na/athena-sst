@@ -6,6 +6,7 @@ export default function useGetActiveOrganization() {
   const {
     data: organizations,
     isLoading: isLoadingOrganizations,
+    isFetching,
     error: fetchOrganizationError,
   } = useQuery({
     queryKey: ["organizations"],
@@ -21,6 +22,6 @@ export default function useGetActiveOrganization() {
   return {
     activeOrganization,
     fetchOrganizationError,
-    isLoadingOrganizations,
+    isLoadingOrganizations: isLoadingOrganizations || isFetching,
   };
 }

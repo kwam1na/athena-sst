@@ -11,12 +11,12 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const subcategories = await SubcategoryRepository.list(storeId);
+  const { Items } = await SubcategoryRepository.list(storeId);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      subcategories,
+      subcategories: Items,
     }),
   };
 });

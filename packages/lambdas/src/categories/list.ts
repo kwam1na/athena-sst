@@ -11,12 +11,13 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const categories = await CategoryRepository.list(storeId);
+  const { Items, LastEvaluatedKey } = await CategoryRepository.list(storeId);
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      categories,
+      categories: Items,
+      lastEvaluatedKey: LastEvaluatedKey,
     }),
   };
 });

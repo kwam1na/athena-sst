@@ -2,6 +2,7 @@ import {
   Building,
   Check,
   ChevronsUpDown,
+  Cog,
   PlusCircle,
   Store,
 } from "lucide-react";
@@ -33,6 +34,7 @@ import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAllStores } from "@/api/stores";
 import { useEffect, useState } from "react";
+import { PlusIcon } from "@radix-ui/react-icons";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -182,8 +184,17 @@ export default function OrganizationSwitcher({
                     storeModal.onOpen();
                   }}
                 >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Create organization
+                  <PlusIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                  Create
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => {
+                    setOpen(false);
+                    storeModal.onOpen();
+                  }}
+                >
+                  <Cog className="mr-2 h-4 w-4 text-muted-foreground" />
+                  Manage
                 </CommandItem>
               </CommandGroup>
             </CommandList>

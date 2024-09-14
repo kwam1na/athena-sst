@@ -1,4 +1,6 @@
 import {
+  BatchDeleteRequest,
+  BatchWriteCommand,
   DeleteItemCommand,
   GetItemCommand,
   PutItemCommand,
@@ -11,6 +13,7 @@ import * as uuid from "uuid";
 import { CreateCategoryPayload } from "../../categories/types/payloads";
 import CategoryEntity from "../entities/categoryEntity";
 import InventoryTable from "../tables/inventoryTable";
+import { execute } from "dynamodb-toolbox/table/actions/batchWrite";
 
 export module CategoryRepository {
   export async function create(data: CreateCategoryPayload) {
@@ -53,17 +56,62 @@ export module CategoryRepository {
     return await CategoryEntity.build(DeleteItemCommand).key({ id }).send();
   }
 
-  export async function list(storeId: string) {
+  export async function removeAllCategoriesByStoreId(
+    storeId: string
+  ): Promise<void> {
+    const batchSize = 25; // DynamoDB allows up to 25 items per batch write operation
+    let lastEvaluatedKey: any = undefined;
+
+    do {
+      const result = await list(storeId, 1000, lastEvaluatedKey);
+      const items = result.Items;
+      lastEvaluatedKey = result.LastEvaluatedKey;
+
+      if (!items) return;
+
+      // Process items in batches
+      for (let i = 0; i < items.length; i += batchSize) {
+        const batch = items.slice(i, i + batchSize);
+        const deleteRequests = batch.map((item) =>
+          CategoryEntity.build(BatchDeleteRequest).key({ id: item.id })
+        );
+
+        const batchDeleteCmd = InventoryTable.build(BatchWriteCommand).requests(
+          ...deleteRequests
+        );
+
+        await execute(batchDeleteCmd);
+      }
+    } while (lastEvaluatedKey);
+  }
+
+  export async function list(
+    storeId: string,
+    limit?: number,
+    exclusiveStartKey?: any
+  ) {
     const query: Query<typeof InventoryTable> = {
       index: "byStoreId",
       partition: storeId,
     };
 
-    const { Items } = await InventoryTable.build(QueryCommand)
+    const queryBuilder = InventoryTable.build(QueryCommand)
       .query(query)
-      .entities(CategoryEntity)
-      .send();
+      .entities(CategoryEntity);
 
-    return Items;
+    if (limit) {
+      queryBuilder.options({ limit });
+    }
+
+    if (exclusiveStartKey) {
+      queryBuilder.options({ exclusiveStartKey });
+    }
+
+    const result = await queryBuilder.send();
+
+    return {
+      Items: result.Items,
+      LastEvaluatedKey: result.LastEvaluatedKey,
+    };
   }
 }

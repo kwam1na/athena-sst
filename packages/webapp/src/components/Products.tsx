@@ -18,16 +18,27 @@ export default function Products({ store }: { store: StoreResponse }) {
   });
 
   return (
-    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-      {isLoading && <TableSkeleton />}
+    <div>
+      {isLoading && (
+        <div className="p-8">
+          <TableSkeleton />
+        </div>
+      )}
       {!isLoading && !error && data && data.length > 0 && (
-        <DataTable data={data} columns={columns} />
+        <div className="p-8">
+          <DataTable data={data} columns={columns} />
+        </div>
       )}
       {error && <ErrorPage title={error.message} />}
       {data && data.length == 0 && !isFetching && (
         <EmptyState
           icon={<PackageXIcon className="w-16 h-16 text-muted-foreground" />}
-          text={`No products in ${store.storeName}`}
+          text={
+            <div className="flex gap-1 text-sm">
+              <p className="text-muted-foreground">No products in</p>
+              <p className="font-medium">{store.storeName}</p>
+            </div>
+          }
           cta={
             <Link
               to="/organization/$orgUrlSlug/store/$storeUrlSlug/products/new"

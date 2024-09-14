@@ -57,17 +57,14 @@ export const deleteFileInS3 = async (bucketName: string, path: string) => {
   }
 };
 
-export const deleteDirectoryInS3 = async (
-  bucketName: string,
-  directory: string
-) => {
+export const deleteDirectoryInS3 = async (directory: string) => {
   try {
     let continuationToken: string | undefined;
 
     do {
       // List objects in the "directory"
       const listParams = {
-        Bucket: bucketName,
+        Bucket: config.s3.BUCKET,
         Prefix: `${directory}/`,
         ContinuationToken: continuationToken,
       };
@@ -77,7 +74,7 @@ export const deleteDirectoryInS3 = async (
       if (listResponse.Contents && listResponse.Contents.length > 0) {
         // Delete objects in batches of 1000 (S3 limit)
         const deleteParams = {
-          Bucket: bucketName,
+          Bucket: config.s3.BUCKET,
           Delete: {
             Objects: listResponse.Contents.map(({ Key }) => ({ Key })),
           },
@@ -91,7 +88,7 @@ export const deleteDirectoryInS3 = async (
 
     // Optionally, delete the "directory" object itself if it exists
     const dirParams = {
-      Bucket: bucketName,
+      Bucket: config.s3.BUCKET,
       Key: `${directory}/`,
     };
     await s3.send(new DeleteObjectCommand(dirParams));
