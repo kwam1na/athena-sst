@@ -44,14 +44,15 @@ function ProductViewContent() {
 
   const { activeStore } = useGetActiveStore();
 
-  const {
-    data: product,
-    error,
-    isLoading,
-  } = useQuery({
+  const { error, isLoading } = useQuery({
     queryKey: ["product", productId],
-    queryFn: () => getProduct(productId || ""),
-    enabled: !!productId,
+    queryFn: () =>
+      getProduct({
+        organizationId: activeStore!.organizationId,
+        storeId: activeStore!.id,
+        productId: productId!,
+      }),
+    enabled: Boolean(productId && activeStore),
   });
 
   const createMutation = useMutation({
@@ -114,7 +115,11 @@ function ProductViewContent() {
 
   const deleteItem = async () => {
     if (!productId || !activeStore) return;
-    await deleteProduct(productId, activeStore.id);
+    await deleteProduct({
+      organizationId: activeStore.organizationId,
+      storeId: activeStore.id,
+      productId,
+    });
   };
 
   const deleteMutation = useMutation({
@@ -147,15 +152,21 @@ function ProductViewContent() {
   const saveProduct = async () => {
     updateError(null);
 
+    if (!activeStore) return;
+
     try {
       const data = productSchema.parse({
         ...productData,
-        currency: activeStore?.currency,
-        storeId: activeStore?.id,
+        currency: activeStore.currency,
+        storeId: activeStore.id,
         images: [],
       });
 
-      const product = await createProduct(data);
+      const product = await createProduct({
+        data,
+        organizationId: activeStore.organizationId,
+        storeId: activeStore.id,
+      });
 
       const { imageUrls } = await uploadProductImages(
         images,
@@ -163,7 +174,12 @@ function ProductViewContent() {
         product.id
       );
 
-      return await updateProduct(product.id, { images: imageUrls });
+      return await updateProduct({
+        data: { images: imageUrls },
+        organizationId: activeStore.organizationId,
+        storeId: activeStore.id,
+        productId: product.id,
+      });
     } catch (error) {
       updateError(error as ZodError);
       throw error;
@@ -171,7 +187,7 @@ function ProductViewContent() {
   };
 
   const modifyProduct = async () => {
-    if (!productId) return;
+    if (!productId || !activeStore) return;
 
     updateError(null);
 
@@ -190,12 +206,17 @@ function ProductViewContent() {
     try {
       const data = productSchema.parse({
         ...productData,
-        currency: activeStore?.currency,
-        storeId: activeStore?.id,
+        currency: activeStore.currency,
+        storeId: activeStore.id,
         images: imageUrls,
       });
 
-      return await updateProduct(productId, data);
+      return await updateProduct({
+        data,
+        organizationId: activeStore.organizationId,
+        storeId: activeStore.id,
+        productId,
+      });
     } catch (error) {
       updateError(error as ZodError);
       throw error;

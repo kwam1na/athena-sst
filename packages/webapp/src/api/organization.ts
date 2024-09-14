@@ -7,7 +7,9 @@ import {
 const baseUrl = `${config.apiGateway.URL}/organizations`;
 
 export async function getAllOrganizations(): Promise<OrganizationResponse[]> {
-  const response = await fetch(`${baseUrl}?userId=1`);
+  const response = await fetch(
+    `${config.apiGateway.URL}/users/me/organizations?userId=1`
+  );
 
   if (!response.ok) {
     throw new Error("Error loading organizations.");
@@ -35,7 +37,10 @@ export async function createOrganization(
 ): Promise<OrganizationResponse> {
   const response = await fetch(baseUrl, {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      ...data,
+      organizationName: data.organizationName.trim(),
+    }),
   });
 
   const res = await response.json();
@@ -53,7 +58,10 @@ export async function updateOrganization(
 ): Promise<OrganizationResponse> {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "PUT",
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      ...data,
+      organizationName: data?.organizationName?.trim(),
+    }),
   });
 
   const res = await response.json();

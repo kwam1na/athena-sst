@@ -7,7 +7,7 @@ export const main = Util.handler(async (event) => {
   if (!userId) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Organization ID is required." }),
+      body: JSON.stringify({ error: "User ID is required." }),
     };
   }
 

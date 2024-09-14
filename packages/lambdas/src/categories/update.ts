@@ -4,12 +4,12 @@ import { CategoryRepository } from "../db/repos/categoryRepository";
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
-  const categoryId = event?.pathParameters?.id;
+  const categoryId = event?.pathParameters?.categoryId;
 
   if (!categoryId) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Product ID is required" }),
+      body: JSON.stringify({ error: "Category ID is required" }),
     };
   }
 

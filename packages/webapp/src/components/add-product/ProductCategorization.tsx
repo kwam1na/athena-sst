@@ -44,7 +44,11 @@ function ProductCategorization() {
     error: fetchCategoriesError,
   } = useQuery({
     queryKey: ["categories", activeStore?.id],
-    queryFn: () => getAllCategories(activeStore!.id),
+    queryFn: () =>
+      getAllCategories({
+        organizationId: activeStore!.organizationId,
+        storeId: activeStore!.id,
+      }),
     enabled: Boolean(activeStore),
   });
 
@@ -54,7 +58,11 @@ function ProductCategorization() {
     error: fetchSubategoriesError,
   } = useQuery({
     queryKey: ["subcategories", activeStore?.id],
-    queryFn: () => getAllSubcategories(activeStore!.id),
+    queryFn: () =>
+      getAllSubcategories({
+        organizationId: activeStore!.organizationId,
+        storeId: activeStore!.id,
+      }),
     enabled: Boolean(activeStore),
   });
 

@@ -4,7 +4,7 @@ import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
-  const subcategoryId = event?.pathParameters?.id;
+  const subcategoryId = event?.pathParameters?.subcategoryId;
 
   if (!subcategoryId) {
     return {

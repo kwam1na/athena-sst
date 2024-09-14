@@ -5,13 +5,26 @@ import {
   ProductResponseBody,
   ProductType,
 } from "@/lib/schemas/product";
+import { OrganizationStoreEntityApiParams } from "./types";
 
-const baseUrl = `${config.apiGateway.URL}/products`;
+type GetParams = OrganizationStoreEntityApiParams & {
+  productId: string;
+};
 
-export async function getAllProducts(
-  storeId: string
-): Promise<ProductResponseBody[]> {
-  const response = await fetch(`${baseUrl}?storeId=${storeId}`);
+type CreateParams = OrganizationStoreEntityApiParams & {
+  data: ProductType;
+};
+
+type UpdateParams = GetParams & { data: Partial<ProductType> };
+
+const getBaseUrl = (organizationId: string, storeId: string) =>
+  `${config.apiGateway.URL}/organizations/${organizationId}/stores/${storeId}/products`;
+
+export async function getAllProducts({
+  organizationId,
+  storeId,
+}: OrganizationStoreEntityApiParams): Promise<ProductResponseBody[]> {
+  const response = await fetch(getBaseUrl(organizationId, storeId));
 
   if (!response.ok) {
     throw new Error("Error loading products.");
@@ -22,8 +35,14 @@ export async function getAllProducts(
   return data.products;
 }
 
-export async function getProduct(id: string): Promise<ProductResponseBody> {
-  const response = await fetch(`${baseUrl}/${id}`);
+export async function getProduct({
+  organizationId,
+  storeId,
+  productId,
+}: GetParams): Promise<ProductResponseBody> {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${productId}`
+  );
 
   const res = await response.json();
 
@@ -34,12 +53,14 @@ export async function getProduct(id: string): Promise<ProductResponseBody> {
   return res;
 }
 
-export async function createProduct(
-  data: ProductType
-): Promise<ProductResponseBody> {
-  const response = await fetch(baseUrl, {
+export async function createProduct({
+  data,
+  organizationId,
+  storeId,
+}: CreateParams): Promise<ProductResponseBody> {
+  const response = await fetch(getBaseUrl(organizationId, storeId), {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({ ...data, productName: data.productName.trim() }),
   });
 
   const res = await response.json();
@@ -51,14 +72,19 @@ export async function createProduct(
   return res;
 }
 
-export async function updateProduct(
-  id: string,
-  data: Partial<ProductType>
-): Promise<ProductResponse> {
-  const response = await fetch(`${baseUrl}/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+export async function updateProduct({
+  data,
+  organizationId,
+  storeId,
+  productId,
+}: UpdateParams): Promise<ProductResponse> {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${productId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ ...data, productName: data.productName?.trim() }),
+    }
+  );
 
   const res = await response.json();
 
@@ -69,13 +95,22 @@ export async function updateProduct(
   return res;
 }
 
-export async function deleteProduct(id: string, storeId: string) {
-  const response = await fetch(`${baseUrl}/${id}`, {
-    method: "DELETE",
-  });
+export async function deleteProduct({
+  organizationId,
+  storeId,
+  productId,
+}: GetParams) {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${productId}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   // delete images in s3
-  const deleteImagesResponse = await deleteDirectoryInS3(`${storeId}/${id}`);
+  const deleteImagesResponse = await deleteDirectoryInS3(
+    `${storeId}/${productId}`
+  );
 
   if (deleteImagesResponse.error) {
     throw new Error(
@@ -93,8 +128,11 @@ export async function deleteProduct(id: string, storeId: string) {
   return res;
 }
 
-export async function deleteAllProducts(storeId: string) {
-  const response = await fetch(`${baseUrl}?storeId=${storeId}`, {
+export async function deleteAllProducts({
+  organizationId,
+  storeId,
+}: OrganizationStoreEntityApiParams) {
+  const response = await fetch(getBaseUrl(organizationId, storeId), {
     method: "DELETE",
   });
 

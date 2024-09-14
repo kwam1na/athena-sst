@@ -3,14 +3,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "../../ui/badge";
 
 import placeholder from "@/assets/placeholder.png";
-// import { labels, priorities, statuses } from "./data/data";
-import { Product } from "./data/schema";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { capitalizeFirstLetter } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
+import { ProductResponseBody } from "@/lib/schemas/product";
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<ProductResponseBody>[] = [
   {
     accessorKey: "productName",
     header: ({ column }) => <DataTableColumnHeader column={column} title="" />,
@@ -21,8 +20,8 @@ export const columns: ColumnDef<Product>[] = [
             to="/organization/$orgUrlSlug/store/$storeUrlSlug/products/$productId"
             params={(prev) => ({
               ...prev,
-              orgName: prev.orgName!,
-              storeName: prev.storeName!,
+              orgUrlSlug: prev.orgUrlSlug!,
+              storeUrlSlug: prev.storeUrlSlug!,
               productId: row.original.id,
             })}
             className="flex items-center gap-8"

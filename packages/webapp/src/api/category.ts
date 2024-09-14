@@ -1,12 +1,25 @@
 import config from "@/config";
 import { CategoryResponse, CategoryType } from "@/lib/schemas/category";
+import { OrganizationStoreEntityApiParams } from "./types";
 
-const baseUrl = `${config.apiGateway.URL}/categories`;
+type GetParams = OrganizationStoreEntityApiParams & {
+  categoryId: string;
+};
 
-export async function getAllCategories(
-  storeId: string
-): Promise<CategoryResponse[]> {
-  const response = await fetch(`${baseUrl}?storeId=${storeId}`);
+type CreateParams = OrganizationStoreEntityApiParams & {
+  data: CategoryType;
+};
+
+type UpdateParams = GetParams & { data: Partial<CategoryType> };
+
+const getBaseUrl = (organizationId: string, storeId: string) =>
+  `${config.apiGateway.URL}/organizations/${organizationId}/stores/${storeId}/categories`;
+
+export async function getAllCategories({
+  organizationId,
+  storeId,
+}: OrganizationStoreEntityApiParams): Promise<CategoryResponse[]> {
+  const response = await fetch(getBaseUrl(organizationId, storeId));
 
   if (!response.ok) {
     throw new Error("Error loading categories.");
@@ -17,8 +30,14 @@ export async function getAllCategories(
   return data.categories;
 }
 
-export async function getCategory(id: string): Promise<CategoryResponse> {
-  const response = await fetch(`${baseUrl}/${id}`);
+export async function getCategory({
+  organizationId,
+  storeId,
+  categoryId,
+}: GetParams): Promise<CategoryResponse> {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${categoryId}`
+  );
 
   if (!response.ok) {
     throw new Error("Error loading category.");
@@ -27,12 +46,14 @@ export async function getCategory(id: string): Promise<CategoryResponse> {
   return await response.json();
 }
 
-export async function createCategory(
-  data: CategoryType
-): Promise<CategoryResponse> {
-  const response = await fetch(baseUrl, {
+export async function createCategory({
+  data,
+  organizationId,
+  storeId,
+}: CreateParams): Promise<CategoryResponse> {
+  const response = await fetch(getBaseUrl(organizationId, storeId), {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({ ...data, categoryName: data.categoryName.trim() }),
   });
 
   if (!response.ok) {
@@ -42,14 +63,22 @@ export async function createCategory(
   return await response.json();
 }
 
-export async function updateCategory(
-  id: string,
-  data: Partial<CategoryType>
-): Promise<CategoryResponse> {
-  const response = await fetch(`${baseUrl}/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+export async function updateCategory({
+  data,
+  categoryId,
+  organizationId,
+  storeId,
+}: UpdateParams): Promise<CategoryResponse> {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${categoryId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        ...data,
+        categoryName: data?.categoryName?.trim(),
+      }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Error updating category.");
@@ -58,10 +87,17 @@ export async function updateCategory(
   return await response.json();
 }
 
-export async function deleteCategory(id: string) {
-  const response = await fetch(`${baseUrl}/${id}`, {
-    method: "DELETE",
-  });
+export async function deleteCategory({
+  categoryId,
+  organizationId,
+  storeId,
+}: GetParams) {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${categoryId}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Error deleting category.");

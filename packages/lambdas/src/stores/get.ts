@@ -1,9 +1,8 @@
 import { Util } from "@athena/core/util";
-import { ProductRepository } from "../db/repos/productRepository";
 import { StoreRepository } from "../db/repos/storeRepository";
 
 export const main = Util.handler(async (event) => {
-  const storeId = event?.pathParameters?.id;
+  const storeId = event?.pathParameters?.storeId;
 
   if (!storeId) {
     return {

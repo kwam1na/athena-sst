@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { getProduct } from "@/api/product";
 import { ImageFile } from "@/components/ui/image-uploader";
+import useGetActiveStore from "@/hooks/useGetActiveStore";
 
 type ProductContextType = {
   error: ZodError | null;
@@ -61,10 +62,17 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const { productId } = useParams({ strict: false });
 
+  const { activeStore } = useGetActiveStore();
+
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", productId],
-    queryFn: () => getProduct(productId || ""),
-    enabled: !!productId,
+    queryFn: () =>
+      getProduct({
+        organizationId: activeStore!.organizationId,
+        storeId: activeStore!.id,
+        productId: productId!,
+      }),
+    enabled: Boolean(productId && activeStore),
   });
 
   useEffect(() => {

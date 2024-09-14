@@ -75,7 +75,11 @@ const GeneralSettings = ({ store }: { store: StoreResponse }) => {
     const data = {
       storeName: form.getValues().storeName,
     };
-    return await updateStore(store.id, data);
+    return await updateStore({
+      data,
+      organizationId: store.organizationId,
+      storeId: store.id,
+    });
   };
 
   const mutation = useMutation({
@@ -158,7 +162,10 @@ const DeleteStore = ({ store }: { store: StoreResponse }) => {
   });
 
   const handleDeleteStore = async () => {
-    return await deleteStore(store.id);
+    return await deleteStore({
+      organizationId: store.organizationId,
+      storeId: store.id,
+    });
   };
 
   const deleteMutation = useMutation({

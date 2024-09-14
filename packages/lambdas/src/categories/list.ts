@@ -2,7 +2,7 @@ import { Util } from "@athena/core/util";
 import { CategoryRepository } from "../db/repos/categoryRepository";
 
 export const main = Util.handler(async (event) => {
-  const storeId = event.queryStringParameters?.storeId;
+  const storeId = event.pathParameters?.storeId;
 
   if (!storeId) {
     return {

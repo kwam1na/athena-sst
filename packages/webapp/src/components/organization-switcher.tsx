@@ -1,11 +1,4 @@
-import {
-  Building,
-  Check,
-  ChevronsUpDown,
-  Cog,
-  PlusCircle,
-  Store,
-} from "lucide-react";
+import { Building, Check, ChevronsUpDown, Cog } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,10 +20,8 @@ import { Icons } from "./ui/icons";
 import { useStoreModal } from "@/hooks/use-store-modal";
 import { OverlayModal } from "./ui/modals/overlay-modal";
 import { useStoreCurrency } from "./providers/currency-provider";
-import { StoreResponse } from "@/lib/schemas/store";
-import { useUserContext } from "@/contexts/UserContext";
 import { OrganizationResponse } from "@/lib/schemas/organization";
-import { Link, useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getAllStores } from "@/api/stores";
 import { useEffect, useState } from "react";

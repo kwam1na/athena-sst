@@ -58,14 +58,15 @@ export module SubcategoryRepository {
     return await SubcategoryEntity.build(DeleteItemCommand).key({ id }).send();
   }
 
-  export async function removeAllCategoriesByStoreId(
-    storeId: string
+  export async function removeAllSubcategoriesByStoreId(
+    storeId: string,
+    filters?: Record<string, any>
   ): Promise<void> {
     const batchSize = 25; // DynamoDB allows up to 25 items per batch write operation
     let lastEvaluatedKey: any = undefined;
 
     do {
-      const result = await list(storeId, 1000, lastEvaluatedKey);
+      const result = await list(storeId, 1000, lastEvaluatedKey, filters);
       const items = result.Items;
       lastEvaluatedKey = result.LastEvaluatedKey;
 
@@ -90,26 +91,40 @@ export module SubcategoryRepository {
   export async function list(
     storeId: string,
     limit?: number,
-    exclusiveStartKey?: any
+    exclusiveStartKey?: any,
+    filters?: Record<string, any>
   ) {
     const query: Query<typeof InventoryTable> = {
       index: "byStoreId",
       partition: storeId,
     };
 
-    const queryBuilder = InventoryTable.build(QueryCommand)
-      .query(query)
-      .entities(SubcategoryEntity);
+    let options = {};
+
+    if (filters?.categoryId) {
+      options = {
+        filters: {
+          Subcategory: {
+            attr: "categoryId",
+            eq: filters?.categoryId,
+          },
+        },
+      };
+    }
 
     if (limit) {
-      queryBuilder.options({ limit });
+      options = { ...options, limit };
     }
 
     if (exclusiveStartKey) {
-      queryBuilder.options({ exclusiveStartKey });
+      options = { ...options, exclusiveStartKey };
     }
 
-    const result = await queryBuilder.send();
+    const result = await InventoryTable.build(QueryCommand)
+      .query(query)
+      .entities(SubcategoryEntity)
+      .options(options)
+      .send();
 
     return {
       Items: result.Items,

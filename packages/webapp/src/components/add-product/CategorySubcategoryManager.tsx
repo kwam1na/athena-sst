@@ -23,6 +23,7 @@ import {
 import { Ban } from "lucide-react";
 import {
   createCategory,
+  deleteCategory,
   getAllCategories,
   updateCategory,
 } from "@/api/category";
@@ -62,7 +63,11 @@ function CategoryManager() {
 
   const { data: categoriesData } = useQuery({
     queryKey: ["categories", activeStore?.id],
-    queryFn: () => getAllCategories(activeStore!.id),
+    queryFn: () =>
+      getAllCategories({
+        organizationId: activeStore!.organizationId,
+        storeId: activeStore!.id,
+      }),
     enabled: Boolean(activeStore),
   });
 
@@ -93,24 +98,37 @@ function CategoryManager() {
     if (!name || !activeStore) return;
 
     await createCategory({
-      categoryName: name,
+      organizationId: activeStore.organizationId,
       storeId: activeStore.id,
+      data: {
+        categoryName: name,
+        storeId: activeStore.id,
+      },
     });
   };
 
   const update = async () => {
-    if (!categoryIdToRename || !updatedName) return;
+    if (!categoryIdToRename || !updatedName || !activeStore) return;
 
-    await updateCategory(categoryIdToRename, {
-      categoryName: updatedName,
-      storeId: activeStore?.id,
+    await updateCategory({
+      organizationId: activeStore.organizationId,
+      storeId: activeStore.id,
+      categoryId: categoryIdToRename,
+      data: {
+        categoryName: updatedName,
+        storeId: activeStore?.id,
+      },
     });
   };
 
-  const deleteCategory = async () => {
-    if (!categoryId) return;
+  const removeCategory = async () => {
+    if (!categoryId || !activeStore) return;
 
-    await deleteSubategory(categoryId);
+    await deleteCategory({
+      organizationId: activeStore.organizationId,
+      storeId: activeStore.id,
+      categoryId,
+    });
   };
 
   const createMutation = useMutation({
@@ -146,7 +164,7 @@ function CategoryManager() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteCategory,
+    mutationFn: removeCategory,
     onSuccess: () => {
       toast(`Category '${selectedCategory}' deleted`, {
         icon: <CheckCircledIcon className="w-4 h-4" />,
@@ -154,6 +172,10 @@ function CategoryManager() {
 
       queryClient.invalidateQueries({
         queryKey: ["categories", activeStore?.id],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["subcategories", activeStore?.id],
       });
     },
     onError: () => {
@@ -285,7 +307,11 @@ function SubcategoryManager() {
 
   const { data: subcategoriesData } = useQuery({
     queryKey: ["subcategories", activeStore?.id],
-    queryFn: () => getAllSubcategories(activeStore!.id),
+    queryFn: () =>
+      getAllSubcategories({
+        organizationId: activeStore!.organizationId,
+        storeId: activeStore!.id,
+      }),
     enabled: Boolean(activeStore),
   });
 
@@ -332,26 +358,39 @@ function SubcategoryManager() {
     if (!name || !categoryId || !activeStore) return;
 
     await createSubcategory({
-      subcategoryName: name,
-      storeId: activeStore?.id,
-      categoryId,
+      organizationId: activeStore.organizationId,
+      storeId: activeStore.id,
+      data: {
+        subcategoryName: name,
+        storeId: activeStore?.id,
+        categoryId,
+      },
     });
   };
 
   const update = async () => {
     if (!subcategoryIdToRename) return;
 
-    await updateSubcategory(subcategoryIdToRename, {
-      subcategoryName: updatedName ?? undefined,
-      storeId: activeStore?.id,
-      categoryId: newCategoryId ?? undefined,
+    await updateSubcategory({
+      organizationId: activeStore!.organizationId,
+      storeId: activeStore!.id,
+      subcategoryId: subcategoryIdToRename,
+      data: {
+        subcategoryName: updatedName ?? undefined,
+        storeId: activeStore?.id,
+        categoryId: newCategoryId ?? undefined,
+      },
     });
   };
 
-  const deleteSubcategory = async () => {
-    if (!subcategoryId) return;
+  const removeSubcategory = async () => {
+    if (!subcategoryId || !activeStore) return;
 
-    await deleteSubategory(subcategoryId);
+    await deleteSubategory({
+      organizationId: activeStore.organizationId,
+      storeId: activeStore.id,
+      subcategoryId,
+    });
   };
 
   const createMutation = useMutation({
@@ -387,7 +426,7 @@ function SubcategoryManager() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteSubcategory,
+    mutationFn: removeSubcategory,
     onSuccess: () => {
       toast(`Subcategory '${selectedSubcategory}' deleted`, {
         icon: <CheckCircledIcon className="w-4 h-4" />,

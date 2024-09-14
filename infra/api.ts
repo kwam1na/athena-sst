@@ -1,6 +1,6 @@
 import { secret, table } from "./storage";
 
-export const api = new sst.aws.ApiGatewayV2("Api", {
+export const api = new sst.aws.ApiGatewayV2("AthenaApi", {
   transform: {
     route: {
       handler: {
@@ -19,62 +19,110 @@ api.route(
   "packages/lambdas/src/organizations/create.main"
 );
 api.route(
-  "PUT /organizations/{id}",
+  "PUT /organizations/{organizationId}",
   "packages/lambdas/src/organizations/update.main"
 );
 api.route(
-  "GET /organizations/{id}",
+  "GET /organizations/{organizationId}",
   "packages/lambdas/src/organizations/get.main"
 );
-api.route("GET /organizations", "packages/lambdas/src/organizations/list.main");
 api.route(
-  "DELETE /organizations/{id}",
+  "GET /users/me/organizations",
+  "packages/lambdas/src/organizations/list.main"
+);
+api.route(
+  "DELETE /organizations/{organizationId}",
   "packages/lambdas/src/organizations/delete.main"
 );
 
 // Stores
-api.route("POST /stores", "packages/lambdas/src/stores/create.main");
-api.route("PUT /stores/{id}", "packages/lambdas/src/stores/update.main");
-api.route("GET /stores/{id}", "packages/lambdas/src/stores/get.main");
-api.route("GET /stores", "packages/lambdas/src/stores/list.main");
-api.route("DELETE /stores/{id}", "packages/lambdas/src/stores/delete.main");
+api.route(
+  "POST /organizations/{organizationId}/stores",
+  "packages/lambdas/src/stores/create.main"
+);
+api.route(
+  "PUT /organizations/{organizationId}/stores/{storeId}",
+  "packages/lambdas/src/stores/update.main"
+);
+api.route(
+  "GET /organizations/{organizationId}/stores/{storeId}",
+  "packages/lambdas/src/stores/get.main"
+);
+api.route(
+  "GET /organizations/{organizationId}/stores",
+  "packages/lambdas/src/stores/list.main"
+);
+api.route(
+  "DELETE /organizations/{organizationId}/stores/{storeId}",
+  "packages/lambdas/src/stores/delete.main"
+);
 
 // Products
-api.route("POST /products", "packages/lambdas/src/products/create.main");
-api.route("PUT /products/{id}", "packages/lambdas/src/products/update.main");
-api.route("GET /products/{id}", "packages/lambdas/src/products/get.main");
-api.route("GET /products", "packages/lambdas/src/products/list.main");
-api.route("DELETE /products/{id}", "packages/lambdas/src/products/delete.main");
-api.route("DELETE /products", "packages/lambdas/src/products/deleteAll.main");
+api.route(
+  "POST /organizations/{organizationId}/stores/{storeId}/products",
+  "packages/lambdas/src/products/create.main"
+);
+api.route(
+  "PUT /organizations/{organizationId}/stores/{storeId}/products/{productId}",
+  "packages/lambdas/src/products/update.main"
+);
+api.route(
+  "GET /organizations/{organizationId}/stores/{storeId}/products/{productId}",
+  "packages/lambdas/src/products/get.main"
+);
+api.route(
+  "GET /organizations/{organizationId}/stores/{storeId}/products",
+  "packages/lambdas/src/products/list.main"
+);
+api.route(
+  "DELETE /organizations/{organizationId}/stores/{storeId}/products/{productId}",
+  "packages/lambdas/src/products/delete.main"
+);
+api.route(
+  "DELETE /organizations/{organizationId}/stores/{storeId}/products",
+  "packages/lambdas/src/products/deleteAll.main"
+);
 
 // Categories
-api.route("POST /categories", "packages/lambdas/src/categories/create.main");
 api.route(
-  "PUT /categories/{id}",
+  "POST /organizations/{organizationId}/stores/{storeId}/categories",
+  "packages/lambdas/src/categories/create.main"
+);
+api.route(
+  "PUT /organizations/{organizationId}/stores/{storeId}/categories/{categoryId}",
   "packages/lambdas/src/categories/update.main"
 );
-api.route("GET /categories/{id}", "packages/lambdas/src/categories/get.main");
-api.route("GET /categories", "packages/lambdas/src/categories/list.main");
 api.route(
-  "DELETE /categories/{id}",
+  "GET /organizations/{organizationId}/stores/{storeId}/categories/{categoryId}",
+  "packages/lambdas/src/categories/get.main"
+);
+api.route(
+  "GET /organizations/{organizationId}/stores/{storeId}/categories",
+  "packages/lambdas/src/categories/list.main"
+);
+api.route(
+  "DELETE /organizations/{organizationId}/stores/{storeId}/categories/{categoryId}",
   "packages/lambdas/src/categories/delete.main"
 );
 
 // Subcategories
 api.route(
-  "POST /subcategories",
+  "POST /organizations/{organizationId}/stores/{storeId}/subcategories",
   "packages/lambdas/src/subcategories/create.main"
 );
 api.route(
-  "PUT /subcategories/{id}",
+  "PUT /organizations/{organizationId}/stores/{storeId}/subcategories/{subcategoryId}",
   "packages/lambdas/src/subcategories/update.main"
 );
 api.route(
-  "GET /subcategories/{id}",
+  "GET /organizations/{organizationId}/stores/{storeId}/subcategories/{subcategoryId}",
   "packages/lambdas/src/subcategories/get.main"
 );
-api.route("GET /subcategories", "packages/lambdas/src/subcategories/list.main");
 api.route(
-  "DELETE /subcategories/{id}",
+  "GET /organizations/{organizationId}/stores/{storeId}/subcategories",
+  "packages/lambdas/src/subcategories/list.main"
+);
+api.route(
+  "DELETE /organizations/{organizationId}/stores/{storeId}/subcategories/{subcategoryId}",
   "packages/lambdas/src/subcategories/delete.main"
 );

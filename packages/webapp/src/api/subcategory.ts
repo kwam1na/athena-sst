@@ -3,13 +3,26 @@ import {
   SubcategoryResponse,
   SubcategoryType,
 } from "@/lib/schemas/subcategory";
+import { OrganizationStoreEntityApiParams } from "./types";
 
-const baseUrl = `${config.apiGateway.URL}/subcategories`;
+type GetParams = OrganizationStoreEntityApiParams & {
+  subcategoryId: string;
+};
 
-export async function getAllSubcategories(
-  storeId: string
-): Promise<SubcategoryResponse[]> {
-  const response = await fetch(`${baseUrl}?storeId=${storeId}`);
+type CreateParams = OrganizationStoreEntityApiParams & {
+  data: SubcategoryType;
+};
+
+type UpdateParams = GetParams & { data: Partial<SubcategoryType> };
+
+const getBaseUrl = (organizationId: string, storeId: string) =>
+  `${config.apiGateway.URL}/organizations/${organizationId}/stores/${storeId}/subcategories`;
+
+export async function getAllSubcategories({
+  organizationId,
+  storeId,
+}: OrganizationStoreEntityApiParams): Promise<SubcategoryResponse[]> {
+  const response = await fetch(getBaseUrl(organizationId, storeId));
 
   if (!response.ok) {
     throw new Error("Error loading subcategories.");
@@ -20,8 +33,14 @@ export async function getAllSubcategories(
   return data.subcategories;
 }
 
-export async function getSubategory(id: string): Promise<SubcategoryResponse> {
-  const response = await fetch(`${baseUrl}/${id}`);
+export async function getSubategory({
+  organizationId,
+  storeId,
+  subcategoryId,
+}: GetParams): Promise<SubcategoryResponse> {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${subcategoryId}`
+  );
 
   if (!response.ok) {
     throw new Error("Error loading subcategory.");
@@ -30,12 +49,17 @@ export async function getSubategory(id: string): Promise<SubcategoryResponse> {
   return await response.json();
 }
 
-export async function createSubcategory(
-  data: SubcategoryType
-): Promise<SubcategoryResponse> {
-  const response = await fetch(baseUrl, {
+export async function createSubcategory({
+  data,
+  organizationId,
+  storeId,
+}: CreateParams): Promise<SubcategoryResponse> {
+  const response = await fetch(getBaseUrl(organizationId, storeId), {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      ...data,
+      subcategoryName: data.subcategoryName.trim(),
+    }),
   });
 
   if (!response.ok) {
@@ -45,14 +69,22 @@ export async function createSubcategory(
   return await response.json();
 }
 
-export async function updateSubcategory(
-  id: string,
-  data: Partial<SubcategoryType>
-): Promise<SubcategoryResponse> {
-  const response = await fetch(`${baseUrl}/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+export async function updateSubcategory({
+  data,
+  organizationId,
+  storeId,
+  subcategoryId,
+}: UpdateParams): Promise<SubcategoryResponse> {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${subcategoryId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        ...data,
+        subcategoryName: data.subcategoryName?.trim(),
+      }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Error updating subcategory.");
@@ -61,10 +93,17 @@ export async function updateSubcategory(
   return await response.json();
 }
 
-export async function deleteSubategory(id: string) {
-  const response = await fetch(`${baseUrl}/${id}`, {
-    method: "DELETE",
-  });
+export async function deleteSubategory({
+  organizationId,
+  storeId,
+  subcategoryId,
+}: GetParams) {
+  const response = await fetch(
+    `${getBaseUrl(organizationId, storeId)}/${subcategoryId}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Error deleting subcategory.");

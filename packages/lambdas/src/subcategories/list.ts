@@ -2,7 +2,9 @@ import { Util } from "@athena/core/util";
 import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 export const main = Util.handler(async (event) => {
-  const storeId = event.queryStringParameters?.storeId;
+  const storeId = event.pathParameters?.storeId;
+
+  const categoryId = event?.queryStringParameters?.categoryId;
 
   if (!storeId) {
     return {
@@ -11,7 +13,14 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const { Items } = await SubcategoryRepository.list(storeId);
+  const { Items } = await SubcategoryRepository.list(
+    storeId,
+    undefined,
+    undefined,
+    {
+      categoryId,
+    }
+  );
 
   return {
     statusCode: 200,

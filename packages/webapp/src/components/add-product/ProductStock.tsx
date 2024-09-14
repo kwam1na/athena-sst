@@ -11,11 +11,9 @@ import {
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons";
-import { CardFooter } from "../ui/card";
+import { TrashIcon } from "@radix-ui/react-icons";
 import { useProductContext } from "../../contexts/ProductContext";
 import { getErrorForField } from "@/lib/utils";
-import { ProductType } from "@/lib/schemas/product";
 import { Skeleton } from "../ui/skeleton";
 
 type InventoryItem = {

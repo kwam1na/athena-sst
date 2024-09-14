@@ -2,7 +2,7 @@ import { Util } from "@athena/core/util";
 import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 export const main = Util.handler(async (event) => {
-  const id = event?.pathParameters?.id;
+  const id = event?.pathParameters?.subcategoryId;
 
   if (!id) {
     return {

@@ -5,7 +5,7 @@ import { CategoryRepository } from "../db/repos/categoryRepository";
 import { SkuCounterRepository } from "../db/repos/skuCounterRepository";
 
 export const main = Util.handler(async (event) => {
-  const storeId = event?.pathParameters?.id;
+  const storeId = event?.pathParameters?.storeId;
 
   if (!storeId) {
     return {
@@ -25,7 +25,7 @@ export const main = Util.handler(async (event) => {
 
   await Promise.all([
     SkuCounterRepository.removeAllSkuCountersByStoreId(storeId),
-    SubcategoryRepository.removeAllCategoriesByStoreId(storeId),
+    SubcategoryRepository.removeAllSubcategoriesByStoreId(storeId),
     CategoryRepository.removeAllCategoriesByStoreId(storeId),
     StoreRepository.remove(storeId),
   ]);

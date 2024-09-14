@@ -11,7 +11,7 @@ declare module "sst" {
       "type": "sst.sst.Secret"
       "value": string
     }
-    "Api": {
+    "AthenaApi": {
       "type": "sst.aws.ApiGatewayV2"
       "url": string
     }

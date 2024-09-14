@@ -4,7 +4,7 @@ import { ProductRepository } from "../db/repos/productRepository";
 export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
-  const productId = event?.pathParameters?.id;
+  const productId = event?.pathParameters?.productId;
 
   if (!productId) {
     return {

@@ -14,7 +14,11 @@ import { StoreResponse } from "@/lib/schemas/store";
 export default function Products({ store }: { store: StoreResponse }) {
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ["products", store.id],
-    queryFn: () => getAllProducts(store.id),
+    queryFn: () =>
+      getAllProducts({
+        organizationId: store.organizationId,
+        storeId: store.id,
+      }),
   });
 
   return (

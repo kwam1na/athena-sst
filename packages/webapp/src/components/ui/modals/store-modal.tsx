@@ -57,6 +57,15 @@ export const StoreModal = () => {
   const createMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => saveStore(values),
     onSuccess: (store) => {
+      if (!store) {
+        toast("Something went wrong", {
+          description: "Missing store information",
+          icon: <Ban className="w-4 h-4" />,
+        });
+
+        return;
+      }
+
       toast(`${store.storeName} created`, {
         icon: <CheckCircledIcon className="w-4 h-4" />,
       });
@@ -85,12 +94,16 @@ export const StoreModal = () => {
   });
 
   const saveStore = async (values: z.infer<typeof formSchema>) => {
+    if (!activeOrganization) return;
+
     const data = {
       ...values,
+      storeName: values.storeName,
       createdByUserId: "1",
-      organizationId: activeOrganization?.id || "",
+      organizationId: activeOrganization.id,
     };
-    return await createStore(data);
+
+    return await createStore(activeOrganization.id, data);
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
