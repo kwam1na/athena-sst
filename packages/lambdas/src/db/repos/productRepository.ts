@@ -1,5 +1,7 @@
 import {
   $set,
+  BatchDeleteRequest,
+  BatchWriteCommand,
   DeleteItemCommand,
   GetItemCommand,
   PutItemCommand,
@@ -14,6 +16,7 @@ import { SkuCounterRepository } from "./skuCounterRepository";
 import { Util } from "@athena/core/util";
 import ProductEntity from "../entities/productEntity";
 import InventoryTable from "../tables/inventoryTable";
+import { execute } from "dynamodb-toolbox/table/actions/batchWrite";
 
 export module ProductRepository {
   export async function create(data: CreateProductPayload) {
@@ -107,18 +110,63 @@ export module ProductRepository {
     return await ProductEntity.build(DeleteItemCommand).key({ id }).send();
   }
 
-  export async function list(storeId: string) {
+  export async function removeAllProductsByStoreId(
+    storeId: string
+  ): Promise<void> {
+    const batchSize = 25; // DynamoDB allows up to 25 items per batch write operation
+    let lastEvaluatedKey: any = undefined;
+
+    do {
+      const result = await list(storeId, 1000, lastEvaluatedKey);
+      const items = result.Items;
+      lastEvaluatedKey = result.LastEvaluatedKey;
+
+      if (!items) return;
+
+      // Process items in batches
+      for (let i = 0; i < items.length; i += batchSize) {
+        const batch = items.slice(i, i + batchSize);
+        const deleteRequests = batch.map((item) =>
+          ProductEntity.build(BatchDeleteRequest).key({ id: item.id })
+        );
+
+        const batchDeleteCmd = InventoryTable.build(BatchWriteCommand).requests(
+          ...deleteRequests
+        );
+
+        await execute(batchDeleteCmd);
+      }
+    } while (lastEvaluatedKey);
+  }
+
+  export async function list(
+    storeId: string,
+    limit?: number,
+    exclusiveStartKey?: any
+  ) {
     const query: Query<typeof InventoryTable> = {
       index: "byStoreId",
       partition: storeId,
     };
 
-    const { Items } = await InventoryTable.build(QueryCommand)
+    const queryBuilder = InventoryTable.build(QueryCommand)
       .query(query)
-      .entities(ProductEntity)
-      .send();
+      .entities(ProductEntity);
 
-    return Items;
+    if (limit) {
+      queryBuilder.options({ limit });
+    }
+
+    if (exclusiveStartKey) {
+      queryBuilder.options({ exclusiveStartKey });
+    }
+
+    const result = await queryBuilder.send();
+
+    return {
+      Items: result.Items,
+      LastEvaluatedKey: result.LastEvaluatedKey,
+    };
   }
 
   export async function find(storeId: string, filters: Record<string, any>) {

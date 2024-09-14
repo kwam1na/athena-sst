@@ -1,4 +1,5 @@
 import config from "@/config";
+import { deleteDirectoryInS3 } from "@/lib/aws";
 import {
   ProductResponse,
   ProductResponseBody,
@@ -68,15 +69,42 @@ export async function updateProduct(
   return res;
 }
 
-export async function deleteProduct(id: string) {
+export async function deleteProduct(id: string, storeId: string) {
   const response = await fetch(`${baseUrl}/${id}`, {
+    method: "DELETE",
+  });
+
+  // delete images in s3
+  const deleteImagesResponse = await deleteDirectoryInS3(
+    config.s3.BUCKET,
+    `${storeId}/${id}`
+  );
+
+  if (deleteImagesResponse.error) {
+    throw new Error(
+      (deleteImagesResponse.error as Error).message ||
+        "Error deleting images for product."
+    );
+  }
+
+  const res = await response.json();
+
+  if (!response.ok) {
+    throw new Error(res.error || "Error deleting product.");
+  }
+
+  return res;
+}
+
+export async function deleteAllProducts(storeId: string) {
+  const response = await fetch(`${baseUrl}?storeId=${storeId}`, {
     method: "DELETE",
   });
 
   const res = await response.json();
 
   if (!response.ok) {
-    throw new Error(res.error || "Error deleting product.");
+    throw new Error(res.error || "Error deleting products.");
   }
 
   return res;

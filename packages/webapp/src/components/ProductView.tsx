@@ -113,8 +113,8 @@ function ProductViewContent() {
   });
 
   const deleteItem = async () => {
-    if (!productId) return;
-    await deleteProduct(productId);
+    if (!productId || !activeStore) return;
+    await deleteProduct(productId, activeStore.id);
   };
 
   const deleteMutation = useMutation({
@@ -147,17 +147,23 @@ function ProductViewContent() {
   const saveProduct = async () => {
     updateError(null);
 
-    const { imageUrls } = await uploadProductImages(images);
-
     try {
       const data = productSchema.parse({
         ...productData,
         currency: activeStore?.currency,
         storeId: activeStore?.id,
-        images: imageUrls,
+        images: [],
       });
 
-      return await createProduct(data);
+      const product = await createProduct(data);
+
+      const { imageUrls } = await uploadProductImages(
+        images,
+        activeStore!.id,
+        product.id
+      );
+
+      return await updateProduct(product.id, { images: imageUrls });
     } catch (error) {
       updateError(error as ZodError);
       throw error;
@@ -169,7 +175,11 @@ function ProductViewContent() {
 
     updateError(null);
 
-    const { imageUrls, failedDeleteUrls } = await uploadProductImages(images);
+    const { imageUrls, failedDeleteUrls } = await uploadProductImages(
+      images,
+      activeStore!.id,
+      productId
+    );
 
     if (failedDeleteUrls.length > 0) {
       setFailedToUploadUrls(failedDeleteUrls);

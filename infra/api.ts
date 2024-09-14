@@ -45,6 +45,7 @@ api.route("PUT /products/{id}", "packages/lambdas/src/products/update.main");
 api.route("GET /products/{id}", "packages/lambdas/src/products/get.main");
 api.route("GET /products", "packages/lambdas/src/products/list.main");
 api.route("DELETE /products/{id}", "packages/lambdas/src/products/delete.main");
+api.route("DELETE /products", "packages/lambdas/src/products/deleteAll.main");
 
 // Categories
 api.route("POST /categories", "packages/lambdas/src/categories/create.main");

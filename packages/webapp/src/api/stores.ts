@@ -1,5 +1,7 @@
 import config from "@/config";
 import { StoreResponse, StoreType } from "@/lib/schemas/store";
+import { deleteAllProducts } from "./product";
+import { deleteDirectoryInS3 } from "@/lib/aws";
 
 const baseUrl = `${config.apiGateway.URL}/stores`;
 
@@ -61,6 +63,19 @@ export async function updateStore(
 }
 
 export async function deleteStore(id: string) {
+  // delete products for the store
+  await deleteAllProducts(id);
+
+  // delete images in s3
+  const deleteImagesResponse = await deleteDirectoryInS3(config.s3.BUCKET, id);
+
+  if (deleteImagesResponse.error) {
+    throw new Error(
+      (deleteImagesResponse.error as Error).message ||
+        "Error deleting images for store."
+    );
+  }
+
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
   });

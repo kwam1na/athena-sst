@@ -6,6 +6,7 @@ import { useParams } from "@tanstack/react-router";
 import NotFound from "./states/not-found/NotFound";
 import useGetActiveOrganization from "@/hooks/useGetActiveOrganization";
 import SingleLineError from "./states/error/SingleLineError";
+import Spinner from "./ui/spinner";
 
 export default function ProductsView() {
   const Navigation = () => {
@@ -50,6 +51,7 @@ export default function ProductsView() {
 
   return (
     <View className="bg-background" header={<Navigation />}>
+      {isLoading && <Spinner />}
       {isValidStoreName && isValidOrgName && store && (
         <Products store={store} />
       )}

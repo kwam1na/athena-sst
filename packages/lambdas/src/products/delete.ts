@@ -1,6 +1,4 @@
 import { Util } from "@athena/core/util";
-import { ProductEntity } from "../db/entities/productEntity";
-import { DeleteItemCommand } from "dynamodb-toolbox";
 import { ProductRepository } from "../db/repos/productRepository";
 
 export const main = Util.handler(async (event) => {

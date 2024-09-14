@@ -1,8 +1,8 @@
-import { Outlet } from "@tanstack/react-router";
 import View from "./View";
 import { useQuery } from "@tanstack/react-query";
 import { getAllOrganizations } from "@/api/organization";
 import SingleLineError from "./states/error/SingleLineError";
+import Spinner from "./ui/spinner";
 
 export default function OrganizationsView() {
   const Navigation = () => {
@@ -20,8 +20,7 @@ export default function OrganizationsView() {
 
   return (
     <View className="bg-background" header={<Navigation />}>
-      <Outlet />
-
+      {isLoading && <Spinner />}
       {error && <SingleLineError message={error.message} />}
     </View>
   );

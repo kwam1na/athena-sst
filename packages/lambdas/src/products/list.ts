@@ -16,7 +16,8 @@ export const main = Util.handler(async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      products,
+      products: products.Items,
+      lastEvaluatedKey: products.LastEvaluatedKey,
     }),
   };
 });

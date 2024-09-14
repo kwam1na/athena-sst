@@ -2,8 +2,16 @@ import { ImageFile } from "@/components/ui/image-uploader";
 import config from "@/config";
 import { deleteFileInS3, uploadFileToS3 } from "./aws";
 
-export const uploadFile = async (file: ImageFile) => {
-  return await uploadFileToS3(file.file!, config.s3.BUCKET, file.file?.path!);
+export const uploadFile = async (
+  file: ImageFile,
+  storeId: string,
+  productId: string
+) => {
+  return await uploadFileToS3(
+    file.file!,
+    config.s3.BUCKET,
+    `${storeId}/${productId}/${file.file?.path!}`
+  );
 };
 
 export const deleteFile = async (filePath: string) => {
@@ -31,7 +39,11 @@ export const deleteFiles = async (paths: string[]) => {
   return { successfulDeletedKeys, failedDeleteKeys, failedDeleteUrls };
 };
 
-export const uploadProductImages = async (newImageFiles: ImageFile[]) => {
+export const uploadProductImages = async (
+  newImageFiles: ImageFile[],
+  storeId: string,
+  productId: string
+) => {
   const successfulUploadUrls: string[] = [];
   const failedUploadKeys: string[] = [];
   const failedUploadUrls: string[] = [];
@@ -54,7 +66,7 @@ export const uploadProductImages = async (newImageFiles: ImageFile[]) => {
   const newImages = newImageFiles.filter((image) => !!image.file);
 
   const newImageResults = await Promise.all(
-    newImages.map((image) => uploadFile(image))
+    newImages.map((image) => uploadFile(image, storeId, productId))
   );
 
   newImageResults.forEach((result) => {

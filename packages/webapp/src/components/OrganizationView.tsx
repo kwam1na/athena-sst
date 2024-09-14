@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import NotFound from "./states/not-found/NotFound";
 import SingleLineError from "./states/error/SingleLineError";
+import Spinner from "./ui/spinner";
 
 export default function OrganizationView() {
   const Navigation = () => {
@@ -57,6 +58,7 @@ export default function OrganizationView() {
       {fetchOrganizationsError && (
         <SingleLineError message={fetchOrganizationsError.message} />
       )}
+      {isLoading && <Spinner />}
     </View>
   );
 }
