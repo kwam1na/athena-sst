@@ -4,8 +4,8 @@ import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
 
 export const main = Util.handler(async (event) => {
   const categoryId = event?.pathParameters?.categoryId;
-
   const storeId = event?.pathParameters?.storeId;
+  const organizationId = event?.pathParameters?.organizationId;
 
   if (!categoryId) {
     return {
@@ -21,8 +21,15 @@ export const main = Util.handler(async (event) => {
     };
   }
 
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
   await Promise.all([
-    CategoryRepository.remove(categoryId),
+    CategoryRepository.remove(organizationId, categoryId),
     SubcategoryRepository.removeAllSubcategoriesByStoreId(storeId, {
       categoryId,
     }),

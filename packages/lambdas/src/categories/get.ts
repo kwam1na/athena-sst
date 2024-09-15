@@ -3,6 +3,7 @@ import { CategoryRepository } from "../db/repos/categoryRepository";
 
 export const main = Util.handler(async (event) => {
   const categoryId = event?.pathParameters?.categoryId;
+  const organizationId = event?.pathParameters?.organizationId;
 
   if (!categoryId) {
     return {
@@ -11,7 +12,14 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const result = await CategoryRepository.get(categoryId);
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
+  const result = await CategoryRepository.get(organizationId, categoryId);
 
   if (!result.Item) {
     return {

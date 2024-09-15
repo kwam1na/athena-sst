@@ -9,22 +9,16 @@ import {
 import * as uuid from "uuid";
 import UserEntity from "../entities/userEntity";
 import InventoryTable from "../tables/inventoryTable";
-
-export interface CreateUserPayload {
-  storeId: string;
-  email?: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-}
+import { UserType } from "../../schemas/user";
 
 export module UserRepository {
-  export async function create(data: CreateUserPayload) {
+  export async function create(data: UserType) {
     const id = uuid.v1();
 
     const item: PutItemInput<typeof UserEntity> = {
       id,
-      storeId: data.storeId,
+      organizationId: data.organizationId,
+      activeStoreId: data.activeStoreId,
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
@@ -36,13 +30,21 @@ export module UserRepository {
     return item;
   }
 
-  export async function get(id: string) {
-    return await UserEntity.build(GetItemCommand).key({ id }).send();
+  export async function get(organizationId: string, id: string) {
+    return await UserEntity.build(GetItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
-  export async function update(id: string, data: Partial<CreateUserPayload>) {
+  export async function update(
+    organizationId: string,
+    id: string,
+    data: Partial<UserType>
+  ) {
     const updateData = {
       id,
+      organizationId,
+      ...(data.activeStoreId && { activeStoreId: data.activeStoreId }),
       ...(data.email && { email: data.email }),
       ...(data.firstName && { firstName: data.firstName }),
       ...(data.lastName && { lastName: data.lastName }),
@@ -57,8 +59,10 @@ export module UserRepository {
       .send();
   }
 
-  export async function remove(id: string) {
-    return await UserEntity.build(DeleteItemCommand).key({ id }).send();
+  export async function remove(organizationId: string, id: string) {
+    return await UserEntity.build(DeleteItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function listByStore(storeId: string) {

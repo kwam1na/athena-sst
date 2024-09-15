@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CreateStorePayload, storeSchema } from "./types/payloads";
 import { StoreRepository } from "../db/repos/storeRepository";
 import { OrganizationRepository } from "../db/repos/organizationRepository";
+import { storeSchema, StoreType } from "../schemas/store";
 
 export const main = Util.handler(async (event) => {
-  let data: CreateStorePayload | undefined;
+  let data: StoreType | undefined;
 
   if (event.body != null) {
     try {

@@ -6,6 +6,7 @@ const OrganizationEntity = new Entity({
   table: InventoryTable,
   schema: schema({
     id: string().required().savedAs("pk").key(),
+    _et: string().required().default("Organization").savedAs("sk").key(),
     organizationName: string().required(),
     organizationUrlSlug: string(),
     createdByUserId: string().required(),

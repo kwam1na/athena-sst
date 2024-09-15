@@ -26,13 +26,13 @@ export async function getAllProducts({
 }: OrganizationStoreEntityApiParams): Promise<ProductResponseBody[]> {
   const response = await fetch(getBaseUrl(organizationId, storeId));
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading products.");
+    throw new Error(res.error || "Error loading products.");
   }
 
-  const data = await response.json();
-
-  return data.products;
+  return res.products;
 }
 
 export async function getProduct({

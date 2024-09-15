@@ -21,13 +21,13 @@ export async function getAllCategories({
 }: OrganizationStoreEntityApiParams): Promise<CategoryResponse[]> {
   const response = await fetch(getBaseUrl(organizationId, storeId));
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading categories.");
+    throw new Error(res.error || "Error loading categories.");
   }
 
-  const data = await response.json();
-
-  return data.categories;
+  return res.categories;
 }
 
 export async function getCategory({
@@ -39,11 +39,13 @@ export async function getCategory({
     `${getBaseUrl(organizationId, storeId)}/${categoryId}`
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading category.");
+    throw new Error(res.error || "Error loading category.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function createCategory({
@@ -56,11 +58,13 @@ export async function createCategory({
     body: JSON.stringify({ ...data, categoryName: data.categoryName.trim() }),
   });
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error creating category.");
+    throw new Error(res.error || "Error creating category.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function updateCategory({
@@ -80,11 +84,13 @@ export async function updateCategory({
     }
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error updating category.");
+    throw new Error(res.error || "Error updating category.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function deleteCategory({
@@ -99,9 +105,11 @@ export async function deleteCategory({
     }
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error deleting category.");
+    throw new Error(res.error || "Error deleting category.");
   }
 
-  return await response.json();
+  return res;
 }

@@ -1,20 +1,14 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CreateSubategoryPayload } from "./types/payloads";
 import { SubcategoryRepository } from "../db/repos/subcategoryRepository";
-
-const SubcategorySchema = z.object({
-  subcategoryName: z.string(),
-  categoryId: z.string(),
-  storeId: z.string(),
-});
+import { subcategorySchema, SubcategoryType } from "../schemas/subcategory";
 
 export const main = Util.handler(async (event) => {
-  let data: CreateSubategoryPayload | undefined;
+  let data: SubcategoryType | undefined;
 
   if (event.body != null) {
     try {
-      data = SubcategorySchema.parse(JSON.parse(event.body));
+      data = subcategorySchema.parse(JSON.parse(event.body));
     } catch (e) {
       if (e instanceof z.ZodError) {
         return {

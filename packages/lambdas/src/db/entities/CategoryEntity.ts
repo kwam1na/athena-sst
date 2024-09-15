@@ -5,7 +5,8 @@ const CategoryEntity = new Entity({
   name: "Category",
   table: InventoryTable,
   schema: schema({
-    id: string().required().savedAs("pk").key(),
+    id: string().required().savedAs("sk").key(),
+    organizationId: string().required().savedAs("pk").key(),
     storeId: string().required(),
     categoryName: string().required(),
     description: string().optional(),

@@ -10,17 +10,18 @@ import {
   UpdateItemCommand,
 } from "dynamodb-toolbox";
 import * as uuid from "uuid";
-import { CreateCategoryPayload } from "../../categories/types/payloads";
 import CategoryEntity from "../entities/categoryEntity";
 import InventoryTable from "../tables/inventoryTable";
 import { execute } from "dynamodb-toolbox/table/actions/batchWrite";
+import { CategoryType } from "../../schemas/category";
 
 export module CategoryRepository {
-  export async function create(data: CreateCategoryPayload) {
+  export async function create(data: CategoryType) {
     const id = uuid.v1();
 
     const item: PutItemInput<typeof CategoryEntity> = {
       id,
+      organizationId: data?.organizationId,
       storeId: data?.storeId,
       createdByUserId: "1",
       categoryName: data?.categoryName,
@@ -31,16 +32,20 @@ export module CategoryRepository {
     return item;
   }
 
-  export async function get(id: string) {
-    return await CategoryEntity.build(GetItemCommand).key({ id }).send();
+  export async function get(organizationId: string, id: string) {
+    return await CategoryEntity.build(GetItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function update(
+    organizationId: string,
     id: string,
-    data: Partial<CreateCategoryPayload>
+    data: Partial<CategoryType>
   ) {
     const updateData = {
       id,
+      organizationId,
       ...(data?.categoryName && { categoryName: data.categoryName }),
       ...(data?.storeId && { storeId: data.storeId }),
     };
@@ -52,8 +57,10 @@ export module CategoryRepository {
       .send();
   }
 
-  export async function remove(id: string) {
-    return await CategoryEntity.build(DeleteItemCommand).key({ id }).send();
+  export async function remove(organizationId: string, id: string) {
+    return await CategoryEntity.build(DeleteItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function removeAllCategoriesByStoreId(
@@ -73,7 +80,10 @@ export module CategoryRepository {
       for (let i = 0; i < items.length; i += batchSize) {
         const batch = items.slice(i, i + batchSize);
         const deleteRequests = batch.map((item) =>
-          CategoryEntity.build(BatchDeleteRequest).key({ id: item.id })
+          CategoryEntity.build(BatchDeleteRequest).key({
+            id: item.id,
+            organizationId: item.organizationId,
+          })
         );
 
         const batchDeleteCmd = InventoryTable.build(BatchWriteCommand).requests(

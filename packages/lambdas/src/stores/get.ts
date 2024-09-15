@@ -4,6 +4,8 @@ import { StoreRepository } from "../db/repos/storeRepository";
 export const main = Util.handler(async (event) => {
   const storeId = event?.pathParameters?.storeId;
 
+  const organizationId = event?.pathParameters?.organizationId;
+
   if (!storeId) {
     return {
       statusCode: 400,
@@ -11,7 +13,14 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const result = await StoreRepository.get(storeId);
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
+  const result = await StoreRepository.get(organizationId, storeId);
 
   if (!result.Item) {
     return {

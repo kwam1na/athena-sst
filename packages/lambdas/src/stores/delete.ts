@@ -6,6 +6,7 @@ import { SkuCounterRepository } from "../db/repos/skuCounterRepository";
 
 export const main = Util.handler(async (event) => {
   const storeId = event?.pathParameters?.storeId;
+  const organizationId = event?.pathParameters?.organizationId;
 
   if (!storeId) {
     return {
@@ -14,7 +15,14 @@ export const main = Util.handler(async (event) => {
     };
   }
 
-  const store = await StoreRepository.get(storeId);
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
+  const store = await StoreRepository.get(organizationId, storeId);
 
   if (!store.Item) {
     return {
@@ -27,7 +35,7 @@ export const main = Util.handler(async (event) => {
     SkuCounterRepository.removeAllSkuCountersByStoreId(storeId),
     SubcategoryRepository.removeAllSubcategoriesByStoreId(storeId),
     CategoryRepository.removeAllCategoriesByStoreId(storeId),
-    StoreRepository.remove(storeId),
+    StoreRepository.remove(organizationId, storeId),
   ]);
 
   return {

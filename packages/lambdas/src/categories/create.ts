@@ -1,19 +1,14 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CreateCategoryPayload } from "./types/payloads";
 import { CategoryRepository } from "../db/repos/categoryRepository";
-
-const CategorySchema = z.object({
-  categoryName: z.string(),
-  storeId: z.string(),
-});
+import { categorySchema, CategoryType } from "../schemas/category";
 
 export const main = Util.handler(async (event) => {
-  let data: CreateCategoryPayload | undefined;
+  let data: CategoryType | undefined;
 
   if (event.body != null) {
     try {
-      data = CategorySchema.parse(JSON.parse(event.body));
+      data = categorySchema.parse(JSON.parse(event.body));
     } catch (e) {
       if (e instanceof z.ZodError) {
         return {

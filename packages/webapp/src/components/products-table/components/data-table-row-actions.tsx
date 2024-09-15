@@ -35,7 +35,11 @@ export function DataTableRowActions<TData>({
   const product = row.original as ProductResponseBody;
 
   const deleteItem = async () => {
-    await deleteProduct(product.id, product.storeId);
+    await deleteProduct({
+      organizationId: product.organizationId,
+      storeId: product.storeId,
+      productId: product.id,
+    });
   };
 
   const deleteMutation = useMutation({

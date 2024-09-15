@@ -5,7 +5,8 @@ const SubcategoryEntity = new Entity({
   name: "Subcategory",
   table: InventoryTable,
   schema: schema({
-    id: string().required().savedAs("pk").key(),
+    id: string().required().savedAs("sk").key(),
+    organizationId: string().required().savedAs("pk").key(),
     storeId: string().required(),
     categoryId: string().required(),
     subcategoryName: string().required(),

@@ -13,20 +13,15 @@ import * as uuid from "uuid";
 import SkuCounterEntity from "../entities/skuCounterEntity";
 import InventoryTable from "../tables/inventoryTable";
 import { execute } from "dynamodb-toolbox/table/actions/batchWrite";
-
-export type CreateSkuPayload = {
-  categoryId: string;
-  subcategoryId: string;
-  storeId: string;
-  lastUsed: number;
-};
+import { SkuType } from "../../schemas/skuCounter";
 
 export module SkuCounterRepository {
-  export async function create(data: CreateSkuPayload) {
+  export async function create(data: SkuType) {
     const id = uuid.v1();
 
     const item: PutItemInput<typeof SkuCounterEntity> = {
       id,
+      organizationId: data?.organizationId,
       storeId: data?.storeId,
       categoryId: data?.categoryId,
       subcategoryId: data.subcategoryId,
@@ -66,9 +61,14 @@ export module SkuCounterRepository {
     return Items?.[0] || null;
   }
 
-  export async function update(id: string, data: Partial<CreateSkuPayload>) {
+  export async function update(
+    organizationId: string,
+    id: string,
+    data: Partial<SkuType>
+  ) {
     const updateData = {
       id,
+      organizationId,
       ...(data?.lastUsed && { lastUsed: data.lastUsed }),
     };
     return await SkuCounterEntity.build(UpdateItemCommand)
@@ -79,8 +79,10 @@ export module SkuCounterRepository {
       .send();
   }
 
-  export async function remove(id: string) {
-    return await SkuCounterEntity.build(DeleteItemCommand).key({ id }).send();
+  export async function remove(organizationId: string, id: string) {
+    return await SkuCounterEntity.build(DeleteItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function removeAllSkuCountersByStoreId(
@@ -100,7 +102,10 @@ export module SkuCounterRepository {
       for (let i = 0; i < items.length; i += batchSize) {
         const batch = items.slice(i, i + batchSize);
         const deleteRequests = batch.map((item) =>
-          SkuCounterEntity.build(BatchDeleteRequest).key({ id: item.id })
+          SkuCounterEntity.build(BatchDeleteRequest).key({
+            id: item.id,
+            organizationId: item.organizationId,
+          })
         );
 
         const batchDeleteCmd = InventoryTable.build(BatchWriteCommand).requests(

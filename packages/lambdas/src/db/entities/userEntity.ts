@@ -5,8 +5,9 @@ const UserEntity = new Entity({
   name: "User",
   table: InventoryTable,
   schema: schema({
-    id: string().required().savedAs("pk").key(),
-    storeId: string().required(),
+    id: string().required().savedAs("sk").key(),
+    organizationId: string().required().savedAs("pk").key(),
+    activeStoreId: string().required(),
     email: string().optional(),
     firstName: string().required(),
     lastName: string().required(),

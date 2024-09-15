@@ -5,6 +5,7 @@ export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
   const productId = event?.pathParameters?.productId;
+  const organizationId = event?.pathParameters?.organizationId;
 
   if (!productId) {
     return {
@@ -13,8 +14,18 @@ export const main = Util.handler(async (event) => {
     };
   }
 
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
   try {
-    const existingProduct = await ProductRepository.get(productId);
+    const existingProduct = await ProductRepository.get(
+      organizationId,
+      productId
+    );
 
     if (!existingProduct.Item) {
       return {
@@ -38,7 +49,11 @@ export const main = Util.handler(async (event) => {
       }
     }
 
-    const result = await ProductRepository.update(productId, data);
+    const result = await ProductRepository.update(
+      organizationId,
+      productId,
+      data
+    );
 
     return {
       statusCode: 200,
@@ -48,7 +63,7 @@ export const main = Util.handler(async (event) => {
     console.error("Error updating product:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Could not update the product" }),
+      body: JSON.stringify({ error: (error as Error).message }),
     };
   }
 });

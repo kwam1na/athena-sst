@@ -9,10 +9,9 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Separator } from "../ui/separator";
-import { CategoryResponse } from "@/lib/schemas/category";
 import { useEffect, useState } from "react";
 import { LoadingButton } from "../ui/loading-button";
-import { CheckCircledIcon, TrashIcon } from "@radix-ui/react-icons";
+import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import {
   createSubcategory,
@@ -28,6 +27,7 @@ import {
   updateCategory,
 } from "@/api/category";
 import useGetActiveStore from "@/hooks/useGetActiveStore";
+import { CategoryResponse } from "@/lib/schemas/category";
 
 type Option = "category" | "subcategory";
 
@@ -103,6 +103,7 @@ function CategoryManager() {
       data: {
         categoryName: name,
         storeId: activeStore.id,
+        organizationId: activeStore.organizationId,
       },
     });
   };
@@ -142,8 +143,11 @@ function CategoryManager() {
         queryKey: ["categories", activeStore?.id],
       });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        icon: <Ban className="w-4 h-4" />,
+        description: (e as Error).message,
+      });
     },
   });
 
@@ -158,8 +162,11 @@ function CategoryManager() {
         queryKey: ["categories", activeStore?.id],
       });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        icon: <Ban className="w-4 h-4" />,
+        description: (e as Error).message,
+      });
     },
   });
 
@@ -178,8 +185,11 @@ function CategoryManager() {
         queryKey: ["subcategories", activeStore?.id],
       });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        icon: <Ban className="w-4 h-4" />,
+        description: (e as Error).message,
+      });
     },
   });
 
@@ -364,6 +374,7 @@ function SubcategoryManager() {
         subcategoryName: name,
         storeId: activeStore?.id,
         categoryId,
+        organizationId: activeStore.organizationId,
       },
     });
   };
@@ -404,8 +415,11 @@ function SubcategoryManager() {
         queryKey: ["subcategories", activeStore?.id],
       });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        icon: <Ban className="w-4 h-4" />,
+        description: (e as Error).message,
+      });
     },
   });
 
@@ -420,8 +434,11 @@ function SubcategoryManager() {
         queryKey: ["subcategories", activeStore?.id],
       });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        icon: <Ban className="w-4 h-4" />,
+        description: (e as Error).message,
+      });
     },
   });
 
@@ -436,8 +453,11 @@ function SubcategoryManager() {
         queryKey: ["subcategories", activeStore?.id],
       });
     },
-    onError: () => {
-      toast("Something went wrong", { icon: <Ban className="w-4 h-4" /> });
+    onError: (e) => {
+      toast("Something went wrong", {
+        icon: <Ban className="w-4 h-4" />,
+        description: (e as Error).message,
+      });
     },
   });
 

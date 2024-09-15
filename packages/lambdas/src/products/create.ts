@@ -1,28 +1,14 @@
 import { z } from "zod";
 import { Util } from "@athena/core/util";
-import { CreateProductPayload } from "./types/payloads";
 import { ProductRepository } from "../db/repos/productRepository";
-
-const CreateProductPayloadSchema = z.object({
-  availability: z.string(),
-  categoryId: z.string().optional(),
-  currency: z.string(),
-  inventoryCount: z.number(),
-  productName: z.string(),
-  price: z.number(),
-  sku: z.string().optional(),
-  storeId: z.string(),
-  subcategoryId: z.string().optional(),
-  unitCost: z.number(),
-  images: z.array(z.string()),
-});
+import { productSchema, ProductType } from "../schemas/product";
 
 export const main = Util.handler(async (event) => {
-  let data: CreateProductPayload | undefined;
+  let data: ProductType | undefined;
 
   if (event.body != null) {
     try {
-      data = CreateProductPayloadSchema.parse(JSON.parse(event.body));
+      data = productSchema.parse(JSON.parse(event.body));
     } catch (e) {
       if (e instanceof z.ZodError) {
         return {

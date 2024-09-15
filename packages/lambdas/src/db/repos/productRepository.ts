@@ -11,18 +11,18 @@ import {
   UpdateItemCommand,
 } from "dynamodb-toolbox";
 import * as uuid from "uuid";
-import { CreateProductPayload } from "../../products/types/payloads";
 import { SkuCounterRepository } from "./skuCounterRepository";
 import { Util } from "@athena/core/util";
 import ProductEntity from "../entities/productEntity";
 import InventoryTable from "../tables/inventoryTable";
 import { execute } from "dynamodb-toolbox/table/actions/batchWrite";
+import { ProductType } from "../../schemas/product";
 
 export module ProductRepository {
-  export async function create(data: CreateProductPayload) {
+  export async function create(data: ProductType) {
     const id = uuid.v1();
 
-    const { sku, storeId, categoryId, subcategoryId } = data;
+    const { sku, storeId, categoryId, subcategoryId, organizationId } = data;
 
     let productSKU = sku;
 
@@ -36,6 +36,7 @@ export module ProductRepository {
       if (!skuCounter) {
         skuCounter = await SkuCounterRepository.create({
           categoryId,
+          organizationId,
           storeId,
           subcategoryId,
           lastUsed: 0,
@@ -48,13 +49,14 @@ export module ProductRepository {
         skuCounter.lastUsed
       );
 
-      await SkuCounterRepository.update(skuCounter.id, {
+      await SkuCounterRepository.update(organizationId, skuCounter.id, {
         lastUsed: skuCounter.lastUsed + 1,
       });
     }
 
     const item: PutItemInput<typeof ProductEntity> = {
       id,
+      organizationId: data?.organizationId,
       availability: data?.availability,
       categoryId: data?.categoryId,
       createdByUserId: "1",
@@ -74,16 +76,20 @@ export module ProductRepository {
     return item;
   }
 
-  export async function get(id: string) {
-    return await ProductEntity.build(GetItemCommand).key({ id }).send();
+  export async function get(organizationId: string, id: string) {
+    return await ProductEntity.build(GetItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function update(
+    organizationId: string,
     id: string,
-    data: Partial<CreateProductPayload>
+    data: Partial<ProductType>
   ) {
     const updateData = {
       id,
+      organizationId,
       ...(data?.availability && { availability: data.availability }),
       ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.inventoryCount !== undefined && {
@@ -106,8 +112,10 @@ export module ProductRepository {
       .send();
   }
 
-  export async function remove(id: string) {
-    return await ProductEntity.build(DeleteItemCommand).key({ id }).send();
+  export async function remove(organizationId: string, id: string) {
+    return await ProductEntity.build(DeleteItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function removeAllProductsByStoreId(
@@ -127,7 +135,10 @@ export module ProductRepository {
       for (let i = 0; i < items.length; i += batchSize) {
         const batch = items.slice(i, i + batchSize);
         const deleteRequests = batch.map((item) =>
-          ProductEntity.build(BatchDeleteRequest).key({ id: item.id })
+          ProductEntity.build(BatchDeleteRequest).key({
+            id: item.id,
+            organizationId: item.organizationId,
+          })
         );
 
         const batchDeleteCmd = InventoryTable.build(BatchWriteCommand).requests(

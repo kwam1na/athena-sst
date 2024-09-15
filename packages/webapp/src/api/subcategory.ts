@@ -24,13 +24,13 @@ export async function getAllSubcategories({
 }: OrganizationStoreEntityApiParams): Promise<SubcategoryResponse[]> {
   const response = await fetch(getBaseUrl(organizationId, storeId));
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading subcategories.");
+    throw new Error(res.error || "Error loading subcategories.");
   }
 
-  const data = await response.json();
-
-  return data.subcategories;
+  return res.subcategories;
 }
 
 export async function getSubategory({
@@ -42,11 +42,13 @@ export async function getSubategory({
     `${getBaseUrl(organizationId, storeId)}/${subcategoryId}`
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading subcategory.");
+    throw new Error(res.error || "Error loading subcategory.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function createSubcategory({
@@ -62,11 +64,13 @@ export async function createSubcategory({
     }),
   });
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error creating subcategory.");
+    throw new Error(res.error || "Error creating subcategory.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function updateSubcategory({
@@ -86,11 +90,13 @@ export async function updateSubcategory({
     }
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error updating subcategory.");
+    throw new Error(res.error || "Error updating subcategory.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function deleteSubategory({
@@ -105,9 +111,11 @@ export async function deleteSubategory({
     }
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error deleting subcategory.");
+    throw new Error(res.error || "Error deleting subcategory.");
   }
 
-  return await response.json();
+  return res;
 }

@@ -5,6 +5,7 @@ export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
   const subcategoryId = event?.pathParameters?.subcategoryId;
+  const organizationId = event?.pathParameters?.organizationId;
 
   if (!subcategoryId) {
     return {
@@ -13,8 +14,18 @@ export const main = Util.handler(async (event) => {
     };
   }
 
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
   try {
-    const existingProduct = await SubcategoryRepository.get(subcategoryId);
+    const existingProduct = await SubcategoryRepository.get(
+      organizationId,
+      subcategoryId
+    );
 
     if (!existingProduct.Item) {
       return {
@@ -23,7 +34,11 @@ export const main = Util.handler(async (event) => {
       };
     }
 
-    const result = await SubcategoryRepository.update(subcategoryId, data);
+    const result = await SubcategoryRepository.update(
+      organizationId,
+      subcategoryId,
+      data
+    );
 
     return {
       statusCode: 200,

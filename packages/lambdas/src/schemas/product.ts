@@ -9,7 +9,7 @@ export const productSchema = z.object({
   organizationId: z.string(),
   subcategoryId: z.string(),
   sku: z.string().min(3).optional(),
-  productName: z.string().min(2),
+  productName: z.string(),
   price: z.number().min(0),
   unitCost: z.number().min(0),
   images: z.array(z.string()),

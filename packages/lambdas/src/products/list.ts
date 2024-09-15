@@ -3,11 +3,19 @@ import { ProductRepository } from "../db/repos/productRepository";
 
 export const main = Util.handler(async (event) => {
   const storeId = event.pathParameters?.storeId;
+  const organizationId = event.pathParameters?.organizationId;
 
   if (!storeId) {
     return {
       statusCode: 400,
       body: JSON.stringify({ error: "Store ID is required." }),
+    };
+  }
+
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required." }),
     };
   }
 

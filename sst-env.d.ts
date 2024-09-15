@@ -19,7 +19,7 @@ declare module "sst" {
       "id": string
       "type": "sst.aws.CognitoIdentityPool"
     }
-    "InventoryDB": {
+    "Inventory": {
       "name": string
       "type": "sst.aws.Dynamo"
     }

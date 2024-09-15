@@ -16,13 +16,13 @@ export async function getAllStores(
 ): Promise<StoreResponse[]> {
   const response = await fetch(getBaseUrl(organizationId));
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading stores.");
+    throw new Error(res.error || "Error loading stores.");
   }
 
-  const data = await response.json();
-
-  return data.stores;
+  return res.stores;
 }
 
 export async function getStore({
@@ -31,11 +31,13 @@ export async function getStore({
 }: OrganizationStoreEntityApiParams): Promise<StoreResponse> {
   const response = await fetch(`${getBaseUrl(organizationId)}/${storeId}`);
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading store.");
+    throw new Error(res.error || "Error loading store.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function createStore(

@@ -11,13 +11,13 @@ export async function getAllOrganizations(): Promise<OrganizationResponse[]> {
     `${config.apiGateway.URL}/users/me/organizations?userId=1`
   );
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading organizations.");
+    throw new Error(res.error || "Error loading organizations.");
   }
 
-  const data = await response.json();
-
-  return data.organizations;
+  return res.organizations;
 }
 
 export async function getOrganization(
@@ -25,11 +25,13 @@ export async function getOrganization(
 ): Promise<OrganizationResponse> {
   const response = await fetch(`${baseUrl}/${id}`);
 
+  const res = await response.json();
+
   if (!response.ok) {
-    throw new Error("Error loading organization.");
+    throw new Error(res.error || "Error loading organization.");
   }
 
-  return await response.json();
+  return res;
 }
 
 export async function createOrganization(

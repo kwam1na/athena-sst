@@ -7,20 +7,19 @@ const dynamoDbClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 const InventoryTable = new Table({
   documentClient: dynamoDbClient,
-  name: Resource.InventoryDB.name,
-  partitionKey: { name: "pk", type: "string" },
+  name: Resource.Inventory.name,
+  partitionKey: { name: "pk", type: "string" }, // Now represents organizationId
+  sortKey: { name: "sk", type: "string" }, // Now represents id
   indexes: {
     byStoreId: {
       type: "global",
       partitionKey: { name: "storeId", type: "string" },
-    },
-    byOrganizationId: {
-      type: "global",
-      partitionKey: { name: "organizationId", type: "string" },
+      sortKey: { name: "sk", type: "string" },
     },
     byCreatedByUserId: {
       type: "global",
       partitionKey: { name: "createdByUserId", type: "string" },
+      sortKey: { name: "sk", type: "string" },
     },
   },
 });

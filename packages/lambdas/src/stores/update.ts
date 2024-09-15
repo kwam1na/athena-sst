@@ -5,6 +5,7 @@ export const main = Util.handler(async (event) => {
   const data = JSON.parse(event.body || "{}");
 
   const storeId = event?.pathParameters?.storeId;
+  const organizationId = event?.pathParameters?.organizationId;
 
   if (!storeId) {
     return {
@@ -13,8 +14,15 @@ export const main = Util.handler(async (event) => {
     };
   }
 
+  if (!organizationId) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: "Organization ID is required" }),
+    };
+  }
+
   try {
-    const existingStore = await StoreRepository.get(storeId);
+    const existingStore = await StoreRepository.get(organizationId, storeId);
 
     if (!existingStore.Item) {
       return {
@@ -23,7 +31,7 @@ export const main = Util.handler(async (event) => {
       };
     }
 
-    const result = await StoreRepository.update(storeId, data);
+    const result = await StoreRepository.update(organizationId, storeId, data);
 
     return {
       statusCode: 200,

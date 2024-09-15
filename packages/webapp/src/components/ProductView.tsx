@@ -159,6 +159,7 @@ function ProductViewContent() {
         ...productData,
         currency: activeStore.currency,
         storeId: activeStore.id,
+        organizationId: activeStore.organizationId,
         images: [],
       });
 
@@ -167,6 +168,8 @@ function ProductViewContent() {
         organizationId: activeStore.organizationId,
         storeId: activeStore.id,
       });
+
+      // TODO: handle case where initial creation succeeds but upload step fails
 
       const { imageUrls } = await uploadProductImages(
         images,
@@ -181,6 +184,7 @@ function ProductViewContent() {
         productId: product.id,
       });
     } catch (error) {
+      // TODO: problematic
       updateError(error as ZodError);
       throw error;
     }

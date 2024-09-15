@@ -5,8 +5,8 @@ const StoreEntity = new Entity({
   name: "Store",
   table: InventoryTable,
   schema: schema({
-    id: string().required().savedAs("pk").key(),
-    organizationId: string().required(),
+    id: string().required().savedAs("sk").key(),
+    organizationId: string().required().savedAs("pk").key(),
     currency: string().required(),
     storeName: string().required(),
     storeUrlSlug: string(),

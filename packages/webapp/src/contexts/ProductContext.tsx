@@ -50,8 +50,9 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       productSchema.parse({
         ...productData,
-        currency: "ghs",
-        storeId: "1",
+        currency: activeStore?.currency,
+        storeId: activeStore?.id,
+        organizationId: activeStore?.organizationId,
         images: images.map((file) => file.file?.path || file.preview),
       });
       return true;

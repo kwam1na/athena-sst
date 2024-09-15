@@ -10,17 +10,18 @@ import {
   UpdateItemCommand,
 } from "dynamodb-toolbox";
 import * as uuid from "uuid";
-import { CreateSubategoryPayload } from "../../subcategories/types/payloads";
 import InventoryTable from "../tables/inventoryTable";
 import SubcategoryEntity from "../entities/subcategoryEntity";
 import { execute } from "dynamodb-toolbox/table/actions/batchWrite";
+import { SubcategoryType } from "../../schemas/subcategory";
 
 export module SubcategoryRepository {
-  export async function create(data: CreateSubategoryPayload) {
+  export async function create(data: SubcategoryType) {
     const id = uuid.v1();
 
     const item: PutItemInput<typeof SubcategoryEntity> = {
       id,
+      organizationId: data?.organizationId,
       storeId: data?.storeId,
       createdByUserId: "1",
       subcategoryName: data?.subcategoryName,
@@ -32,16 +33,20 @@ export module SubcategoryRepository {
     return item;
   }
 
-  export async function get(id: string) {
-    return await SubcategoryEntity.build(GetItemCommand).key({ id }).send();
+  export async function get(organizationId: string, id: string) {
+    return await SubcategoryEntity.build(GetItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function update(
+    organizationId: string,
     id: string,
-    data: Partial<CreateSubategoryPayload>
+    data: Partial<SubcategoryType>
   ) {
     const updateData = {
       id,
+      organizationId,
       ...(data?.subcategoryName && { subcategoryName: data.subcategoryName }),
       ...(data?.categoryId && { categoryId: data.categoryId }),
       ...(data?.storeId && { storeId: data.storeId }),
@@ -54,8 +59,10 @@ export module SubcategoryRepository {
       .send();
   }
 
-  export async function remove(id: string) {
-    return await SubcategoryEntity.build(DeleteItemCommand).key({ id }).send();
+  export async function remove(organizationId: string, id: string) {
+    return await SubcategoryEntity.build(DeleteItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function removeAllSubcategoriesByStoreId(
@@ -76,7 +83,10 @@ export module SubcategoryRepository {
       for (let i = 0; i < items.length; i += batchSize) {
         const batch = items.slice(i, i + batchSize);
         const deleteRequests = batch.map((item) =>
-          SubcategoryEntity.build(BatchDeleteRequest).key({ id: item.id })
+          SubcategoryEntity.build(BatchDeleteRequest).key({
+            id: item.id,
+            organizationId: item.organizationId,
+          })
         );
 
         const batchDeleteCmd = InventoryTable.build(BatchWriteCommand).requests(

@@ -9,11 +9,11 @@ import {
 import * as uuid from "uuid";
 import StoreEntity from "../entities/storeEntity";
 import InventoryTable from "../tables/inventoryTable";
-import { CreateStorePayload } from "../../stores/types/payloads";
 import { Util } from "@athena/core/util";
+import { StoreType } from "../../schemas/store";
 
 export module StoreRepository {
-  export async function create(data: CreateStorePayload) {
+  export async function create(data: StoreType) {
     const id = uuid.v1();
 
     const item: PutItemInput<typeof StoreEntity> = {
@@ -32,13 +32,20 @@ export module StoreRepository {
     return item;
   }
 
-  export async function get(id: string) {
-    return await StoreEntity.build(GetItemCommand).key({ id }).send();
+  export async function get(organizationId: string, id: string) {
+    return await StoreEntity.build(GetItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
-  export async function update(id: string, data: Partial<CreateStorePayload>) {
+  export async function update(
+    organizationId: string,
+    id: string,
+    data: Partial<StoreType>
+  ) {
     const updateData = {
       id,
+      organizationId,
       ...(data.currency && { currency: data.currency }),
       ...(data.organizationId && { organizationId: data.organizationId }),
       ...(data.storeName && { storeName: data.storeName }),
@@ -55,14 +62,15 @@ export module StoreRepository {
       .send();
   }
 
-  export async function remove(id: string) {
-    return await StoreEntity.build(DeleteItemCommand).key({ id }).send();
+  export async function remove(organizationId: string, id: string) {
+    return await StoreEntity.build(DeleteItemCommand)
+      .key({ id, organizationId })
+      .send();
   }
 
   export async function list(organizationId: string) {
     const { Items } = await InventoryTable.build(QueryCommand)
       .query({
-        index: "byOrganizationId",
         partition: organizationId,
       })
       .entities(StoreEntity)
